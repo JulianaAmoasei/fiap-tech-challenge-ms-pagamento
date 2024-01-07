@@ -1,11 +1,8 @@
 import express, { Express } from "express";
 import swaggerUi from "swagger-ui-express";
 
-import { Server } from "./config/server.config";
-import {
-  pagamentoRouter,
-} from "./routers/index";
-import specs from "./swaggerConfig";
+import routes from "./routes/index";
+import specs from "./routes/swaggerConfig";
 
 export default class API {
   private app: Express;
@@ -15,9 +12,11 @@ export default class API {
   }
 
   start() {
+    routes(this.app);
     this.app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
-    const server = new Server({ appConfig: this.app });
-    server.addRouter("/api/pagamento", pagamentoRouter);
-    server.init();
+
+    this.app.listen(3000, () => {
+      console.log("servidor escutando!");
+    });
   }
 }

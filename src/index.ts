@@ -17,8 +17,8 @@ dotenv.config();
 
 async function init() {
 
-  await database.authenticate();
-  await database.synchronizeModels(Modelos);
+  // await database.authenticate();
+  // await database.synchronizeModels(Modelos);
   const api = new API();
   api.start()
 

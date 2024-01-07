@@ -15,21 +15,23 @@ services:
     #   - db
     networks:
       - fiap-project-network
-  # db:
-  #   image: mysql
-  #   container_name: fiap-soat-project_db
-  #   environment:
-  #     - MYSQL_ROOT_PASSWORD=admin123
-  #     - MYSQL_DATABASE=fiap-soat-project_db
-  #   ports:
-  #     - "3306:3306"
-  #   volumes:
-  #     - db:/var/lib/mysql
-  #   networks:
-  #     - fiap-project-network
+  db:
+    image: mvertes/alpine-mongo
+    container_name: DEV_fiap-soat-ms_pagamento_db
+    environment:
+      MONGODB_DB_NAME: DEV_pagamento
+      MONGODB_ROOT_USERNAME: root
+      MONGODB_ROOT_PASSWORD: admin123
+      MONGODB_CONNECTIONSTRING: mongodb://localhost:27017/DEV_fiap-soat-ms_pagamento_db
+    ports:
+      - "27017:27017"
+    volumes:
+      - db:/var/lib/mongodb
+    networks:
+      - fiap-project-network
 
-# volumes:
-#    db:
+volumes:
+   db:
 
 networks:
   fiap-project-network:

@@ -1,16 +1,23 @@
 import { PagamentoDTO } from "../../entities/types/pagamentoType";
 import PagamentoModel from "../models/pagamentoModel";
 
+const pagamentoModel = PagamentoModel.init();
+
 export default class PagamentoRepository {
-  async criaPagamento(pagamento: PagamentoDTO): Promise<PagamentoDTO> {
-    return (await PagamentoModel.create(pagamento)) as PagamentoDTO;
+
+  static async criaPagamento(pagamento: PagamentoDTO) {  
+    return pagamentoModel.pagamento.create(pagamento);
   }
 
-  async listaPagamento(idPedido: string): Promise<PagamentoDTO> {
-    return PagamentoModel.findOne(idPedido) as PagamentoDTO;
+  static async atualizaPagamento(id: string, pagamento: PagamentoDTO): Promise<PagamentoDTO | null> {  
+    return pagamentoModel.pagamento.findByIdAndUpdate(id, pagamento);
   }
 
-  async listaPagamentos(): Promise<PagamentoDTO[]> {
-    return PagamentoModel.findAll();
+  static async listaPagamento(idPedido: string): Promise<PagamentoDTO> {
+    return pagamentoModel.pagamento.findOne({ idPedido }) as unknown as PagamentoDTO;
+  }
+
+  static async listaPagamentos(): Promise<PagamentoDTO[]> {
+    return pagamentoModel.pagamento.find({}) as unknown as PagamentoDTO[];
   }
 }

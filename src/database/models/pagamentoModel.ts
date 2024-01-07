@@ -1,71 +1,21 @@
-import { PagamentoDTO } from "../../entities/types";
+import mongoose from "mongoose";
 
-class PagamentoModel
-  implements PagamentoDTO
-{
-  public id!: string;
-  public idPedido!: string;
-  public valorPagamento!: number;
-  public metodoPagamento!: string;
-  public readonly createdAt!: Date;
-  public readonly deletedAt!: Date | null;
-  public readonly updatedAt!: Date | null;
+export default class PagamentoModel {
+  static init() {
+    const pagamentoSchema = new mongoose.Schema({
+      id: { type: mongoose.Schema.Types.ObjectId },
+      idPedido: { type: mongoose.Schema.Types.String },
+      valorPedido: { type: mongoose.Schema.Types.Number },
+      valorPagamento: { type: mongoose.Schema.Types.Number },
+      metodoPagamento: { type: mongoose.Schema.Types.String },
+      statusPagamento: { type: mongoose.Schema.Types.String },
+      createdAt: { type: mongoose.Schema.Types.Date },
+      deletedAt: { type: mongoose.Schema.Types.Date || null },
+      updatedAt: { type: mongoose.Schema.Types.Date || null },
 
-  static initialize(sequelize: Sequelize): void {
-    PagamentoModel.init(
-      {
-        id: {
-          type: DataTypes.UUID,
-          defaultValue: DataTypes.UUIDV4,
-          primaryKey: true,
-          allowNull: false,
-        },
-        isPago: {
-          type: DataTypes.BOOLEAN,
-          allowNull: false,
-        },
-        valorPagamento: {
-          type: DataTypes.DECIMAL(10, 2),
-          allowNull: false,
-        },
-        tipoDePagamento: {
-          type: DataTypes.STRING,
-          allowNull: false,
-        },
-        pagamentoId: {
-          type: DataTypes.UUID,
-          allowNull: false,
-        },
-        createdAt: {
-          type: DataTypes.DATE,
-          allowNull: false,
-        },
-        updatedAt: {
-          type: DataTypes.DATE,
-          allowNull: false,
-        },
-        deletedAt: {
-          type: DataTypes.DATE,
-          allowNull: true,
-          defaultValue: null,
-        },
-      },
-      {
-        paranoid: true,
-        sequelize,
-        tableName: "Pagamentos",
-        timestamps: true,
-        underscored: true,
-      }
-    );
-  }
-
-  static associate(): void {
-    this.hasOne(FaturaModel, {
-      foreignKey: 'pagamentoId'
-    })
-
+    }, { versionKey: false });
+    
+    const pagamento = mongoose.model("pagamentos", pagamentoSchema);
+    return { pagamento, pagamentoSchema };
   }
 }
-
-export default PagamentoModel;
