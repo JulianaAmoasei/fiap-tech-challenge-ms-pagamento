@@ -1,7 +1,7 @@
 import express, { NextFunction } from "express";
 import { Request, Response } from "express";
 
-import PagamentoController from "../controllers/pagamentoController";
+import PagamentoController from "../../controllers/pagamentoController";
 
 // import authenticate from "../middleware/auth";
 // import { validaRequisicao } from "./utils";

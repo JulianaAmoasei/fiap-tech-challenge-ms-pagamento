@@ -1,4 +1,4 @@
-import { PagamentoInput } from "./types/pagamentoType";
+import { PagamentoInput } from "../types/pagamentoType";
 
 export default class Pagamento {
   public id: string;

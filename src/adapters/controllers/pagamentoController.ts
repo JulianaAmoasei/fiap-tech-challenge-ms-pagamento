@@ -1,4 +1,4 @@
-import { PagamentoDTO, PagamentoInput } from "../entities/types/pagamentoType";
+import { PagamentoInput } from "../../domain/types/pagamentoType";
 import PagamentoRepository from "../database/repository/pagamentoRepository";
 
 export default class PagamentoController {

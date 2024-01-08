@@ -1,5 +1,5 @@
-import { PagamentoDTO } from "../../entities/types/pagamentoType";
-import PagamentoModel from "../models/pagamentoModel";
+import { PagamentoDTO } from "../../../domain/types/pagamentoType";
+import PagamentoModel from "../../api/models/pagamentoModel";
 
 const pagamentoModel = PagamentoModel.init();
 

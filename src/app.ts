@@ -1,8 +1,10 @@
 import express, { Express } from "express";
 import swaggerUi from "swagger-ui-express";
 
-import routes from "./routes/index";
-import specs from "./routes/swaggerConfig";
+import routes from "./adapters/api/routes/index";
+import specs from "./adapters/api/routes/swaggerConfig";
+
+const PORT = Number(process.env.PORT) || 3000;
 
 export default class API {
   private app: Express;
@@ -15,7 +17,7 @@ export default class API {
     routes(this.app);
     this.app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
 
-    this.app.listen(3000, () => {
+    this.app.listen(PORT, () => {
       console.log("servidor escutando!");
     });
   }

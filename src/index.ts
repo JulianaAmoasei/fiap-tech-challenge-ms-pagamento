@@ -3,17 +3,8 @@ import dotenv from "dotenv";
 import API from "./app";
 
 // import { DataBaseConfig } from "~datasources/database/config/db.config";
-// import Modelos from "~datasources/database/models";
 
 dotenv.config();
-
-// const database = new DataBaseConfig({
-//   database: process.env.DB_NAME ?? "fiap-soat-project_db",
-//   host: process.env.DB_HOST ?? "localhost",
-//   userName: process.env.DB_USERNAME ?? "user_tech",
-//   password: process.env.DB_PASSWORD ?? "testtest",
-//   port: 3306,
-// });
 
 async function init() {
 
