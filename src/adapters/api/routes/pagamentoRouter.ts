@@ -33,7 +33,7 @@ const pagamentoRouter = express.Router();
  *         description: Erro na api.
  */
 pagamentoRouter.get(
-  "/:id",
+  "/pagamentos/:id",
   // authenticate(TipoUsuario.ADMIN),
   // validaRequisicao(RecebimentoDePagamentosSchema),
   async (
@@ -41,9 +41,10 @@ pagamentoRouter.get(
     res: Response,
     next: NextFunction
   ) => {
-    try {
-      const { idPedido } = req.params;
-      const pagamento = await PagamentoController.listaPagamento(idPedido);
+    try {     
+      const { id } = req.params;
+      console.log(id);
+      const pagamento = await PagamentoController.listaPagamento(id);
 
       // TODO: separar util de obj resposta
       if (pagamento) {
@@ -56,51 +57,6 @@ pagamentoRouter.get(
       }
     } catch (err: unknown) {
       console.log(`Erro ao consultar pagamento: ${err}`);
-      return next(err);
-    }
-  }
-);
-
-/**
- * @openapi
- * /pagamento:
- *   get:
- *     summary: Consulta lista de pagamentos
- *     tags:
- *       - Pagamento
- *     security:
- *       - bearerAuth: []
- *     requestBody:
- *       required: false
- *     responses:
- *       200:
- *         description: Lista de objetos Pagamento.
- *       500:
- *         description: Erro na api.
- */
-pagamentoRouter.get(
-  "/",
-  // authenticate(TipoUsuario.ADMIN),
-  // validaRequisicao(RecebimentoDePagamentosSchema),
-  async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) => {
-    try {
-      const listaPagamentos = await PagamentoController.listaPagamentos();
-
-      // TODO: separar util de obj resposta
-      if (listaPagamentos) {
-        return res.status(200).json({
-          status: "success",
-          listaPagamentos,
-        });
-      } else {
-        throw new Error("Lista de pagamentos não encontrada!");
-      }
-    } catch (err: unknown) {
-      console.log(`Erro ao consultar lista de pagamentos: ${err}`);
       return next(err);
     }
   }

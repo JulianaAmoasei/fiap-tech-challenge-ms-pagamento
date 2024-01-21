@@ -1,4 +1,4 @@
-import { PagamentoInput } from "../../domain/types/pagamentoType";
+import { PagamentoInput } from "../../domain/entities/types/pagamentoType";
 import PagamentoRepository from "../database/repository/pagamentoRepository";
 
 export default class PagamentoController {
@@ -8,9 +8,5 @@ export default class PagamentoController {
 
   static async listaPagamento(id: string) {
     return PagamentoRepository.listaPagamento(id);
-  }
-
-  static async listaPagamentos() {
-    return PagamentoRepository.listaPagamentos();
   }
 }

@@ -1,7 +1,7 @@
-import { PagamentoDTO } from "../../../domain/types/pagamentoType";
+import { PagamentoDTO } from "../../../domain/entities/types/pagamentoType";
 import PagamentoModel from "../../api/models/pagamentoModel";
 
-const pagamentoModel = PagamentoModel.init();
+export const pagamentoModel = PagamentoModel.init();
 
 export default class PagamentoRepository {
 
@@ -15,9 +15,5 @@ export default class PagamentoRepository {
 
   static async listaPagamento(idPedido: string): Promise<PagamentoDTO> {
     return pagamentoModel.pagamento.findOne({ idPedido }) as unknown as PagamentoDTO;
-  }
-
-  static async listaPagamentos(): Promise<PagamentoDTO[]> {
-    return pagamentoModel.pagamento.find({}) as unknown as PagamentoDTO[];
   }
 }

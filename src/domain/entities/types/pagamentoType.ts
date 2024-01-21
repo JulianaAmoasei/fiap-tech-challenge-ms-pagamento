@@ -1,5 +1,4 @@
 export interface PagamentoDTO {
-  id: string;
   idPedido: string;
   valorPedido: number;
   valorPagamento: number | null;
@@ -11,7 +10,6 @@ export interface PagamentoDTO {
 }
 
 export interface PagamentoInput {
-  id: string;
   idPedido: string;
   valorPedido: number;
   valorPagamento: number | null;
@@ -21,3 +19,12 @@ export interface PagamentoInput {
   deletedAt: Date | null;
   updatedAt: Date | null;
 }
+
+export const statusPagamento = {
+  AGUARDANDO_PAGAMENTO: "Aguardando pagamento",
+  FALHA: "Falha no processo de pagamento",
+  PAGAMENTO_CONCLUIDO: "Pagamento concluído",
+} as const;
+
+export type StatusPagamento =
+  (typeof statusPagamento)[keyof typeof statusPagamento];
