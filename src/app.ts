@@ -1,8 +1,8 @@
-import conectaNaDatabase from "adapters/api/infra/dbConfig";
-import { pagamentosFake, seedDb } from "adapters/api/seeders/pagamentoSeed";
+// import { pagamentosFake, seedDb } from "dataSources/api/seeders/pagamentoSeed";
+import conectaNaDatabase from "dataSources/database/infra/dbConfig";
 import express, { Express } from "express";
 
-import routes from "./adapters/api/routes/index";
+import routes from "./adapters/interfaceAdapters/routes/index";
 const PORT = Number(process.env.PORT) || 3000;
 
 async function conectaDb(): Promise<void> {
@@ -14,7 +14,7 @@ async function conectaDb(): Promise<void> {
   conexao.once("open", () => {
     console.log("Conexao com o banco feita com sucesso");
   })
-  await seedDb(pagamentosFake);
+  // await seedDb(pagamentosFake);
 }
 
 conectaDb();

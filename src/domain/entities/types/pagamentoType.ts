@@ -1,8 +1,8 @@
 export interface PagamentoDTO {
-  idPedido: string;
-  valorPedido: number;
-  valorPagamento: number | null;
-  metodoPagamento: string;
+  id?: string;
+  pedidoId: string;
+  valor: number;
+  metodoDePagamento: string;
   statusPagamento: string;
   createdAt: Date;
   deletedAt: Date | null;
@@ -10,14 +10,25 @@ export interface PagamentoDTO {
 }
 
 export interface PagamentoInput {
-  idPedido: string;
-  valorPedido: number;
-  valorPagamento: number | null;
-  metodoPagamento: string;
+  id?: string;
+  pedidoId: string;
+  valor: number;
+  metodoDePagamento: string;
   statusPagamento: string;
   createdAt: Date;
   deletedAt: Date | null;
   updatedAt: Date | null;
+}
+
+export interface SendPaymentQueueBody {
+  pedidoId: string;
+  metodoDePagamento: string;
+  valor: number;
+}
+
+export interface urlQrcodeQueueBody {
+  pedidoId: string;
+  qrUrl: string;
 }
 
 export const statusPagamento = {
