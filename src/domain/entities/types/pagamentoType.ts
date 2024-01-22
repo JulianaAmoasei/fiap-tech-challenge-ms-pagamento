@@ -1,5 +1,5 @@
 export interface PagamentoDTO {
-  id?: string;
+  _id?: string;
   pedidoId: string;
   valor: number;
   metodoDePagamento: string;
@@ -10,7 +10,7 @@ export interface PagamentoDTO {
 }
 
 export interface PagamentoInput {
-  id?: string;
+  _id?: string;
   pedidoId: string;
   valor: number;
   metodoDePagamento: string;
@@ -20,7 +20,13 @@ export interface PagamentoInput {
   updatedAt: Date | null;
 }
 
-export interface SendPaymentQueueBody {
+export interface MsgPedidoPagamentoBody {
+  pedidoId: string;
+  metodoDePagamento: string;
+  valor: number;
+}
+
+export interface MsgCobrancaBody {
   pedidoId: string;
   metodoDePagamento: string;
   valor: number;
@@ -29,6 +35,11 @@ export interface SendPaymentQueueBody {
 export interface urlQrcodeQueueBody {
   pedidoId: string;
   qrUrl: string;
+}
+
+export interface MsgPagtoAtualizadoBody {
+  pedidoId: string;
+  statusPagamento: StatusPagamento;
 }
 
 export const statusPagamento = {

@@ -1,18 +1,15 @@
-
-import PagtoProvider from "dataSources/paymentProvider/pagtoProvider";
-
 import PagamentoUseCase from "~domain/useCases/pagamentoUseCase";
 
 import {
+  MsgPedidoPagamentoBody,
   PagamentoDTO,
-  SendPaymentQueueBody,
   statusPagamento,
 } from "../../../domain/entities/types/pagamentoType";
 import PagamentoRepository from "../../repositories/database/pagamentoRepository";
 
 export default class PagamentoController {
-  static async recebePagamento(pagamento: SendPaymentQueueBody, pagtoProvider: PagtoProvider) {
-    await PagamentoUseCase.enviaCobranca(pagamento, pagtoProvider);
+  static async recebePagamento(pagamento: MsgPedidoPagamentoBody) {
+    await PagamentoUseCase.enviaCobranca(pagamento);
     return PagamentoRepository.criaPagamento(pagamento);
   }
 
@@ -20,14 +17,23 @@ export default class PagamentoController {
     return PagamentoRepository.listaPagamento(id);
   }
 
-  static async atualizaStatusPagamento(idPedido: string) {
+  static async atualizaStatusPagamento(pedidoId: string) {
     const dadosPagto: PagamentoDTO = await PagamentoRepository.listaPagamento(
-      idPedido
+      pedidoId
     );
-    return PagamentoRepository.atualizaPagamento(dadosPagto.id as string, {
-      ...dadosPagto,
-      statusPagamento: statusPagamento.PAGAMENTO_CONCLUIDO,
-    });
+    //parse necessário para acessar o _doc do mongo
+    const stringObj = JSON.stringify(dadosPagto);
+    const pagtoAtualizado = await PagamentoRepository.atualizaPagamento(
+      dadosPagto._id?.toString() as string,
+      {
+        ...JSON.parse(stringObj),
+        statusPagamento: statusPagamento.PAGAMENTO_CONCLUIDO,
+      }
+    );
+
+    await PagamentoUseCase.enviaDadosPagtoAtualizados(
+      pagtoAtualizado as PagamentoDTO
+    );
+    return pagtoAtualizado;
   }
 }
- 

@@ -22,7 +22,7 @@ const pagamentoRouter = express.Router();
  *           schema:
  *             type: object
  *             properties:
- *               idPedido:
+ *               pedidoId:
  *                 type: string
  *     responses:
  *       200:
@@ -41,7 +41,6 @@ pagamentoRouter.get(
   ) => {
     try {     
       const { id } = req.params;
-      console.log(id);
       const pagamento = await PagamentoController.listaPagamento(id);
 
       // TODO: separar util de obj resposta
@@ -80,7 +79,7 @@ pagamentoRouter.get(
  *         description: Erro na api.
  */
 pagamentoRouter.get(
-  "/pagamentos/processamento",
+  "/pagamentos/processamento/:id",
   // authenticate(TipoUsuario.ADMIN),
   // validaRequisicao(RecebimentoDePagamentosSchema),
   async (
@@ -90,7 +89,7 @@ pagamentoRouter.get(
   ) => {
     try {
       const { id } = req.params;
-      console.log('=========processa pagto=========');
+      console.log('==================');
       console.log(id);
       const response = await PagamentoController.atualizaStatusPagamento(id);
       if (response) {

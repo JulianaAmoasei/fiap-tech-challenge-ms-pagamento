@@ -1,7 +1,7 @@
 import PagamentoController from "adapters/interfaceAdapters/controllers/pagamentoController";
 import MessageBrokerService from "dataSources/messageBroker/messageBrokerService";
 
-import { SendPaymentQueueBody } from "~domain/entities/types/pagamentoType";
+import { MsgPedidoPagamentoBody } from "~domain/entities/types/pagamentoType";
 
 const FILA_ENVIO_PAGAMENTO = process.env.FILA_ENVIO_PAGAMENTO as string;
 const DLQ_ENVIO_PAGAMENTO = process.env.DLQ_ENVIO_PAGAMENTO as string;
@@ -9,7 +9,7 @@ const DLQ_ENVIO_PAGAMENTO = process.env.DLQ_ENVIO_PAGAMENTO as string;
 const queueService = new MessageBrokerService();
 
 async function queueCheck() {
-  const pagamentos = await queueService.recebeMensagem<SendPaymentQueueBody>(
+  const pagamentos = await queueService.recebeMensagem<MsgPedidoPagamentoBody>(
     FILA_ENVIO_PAGAMENTO
   );
   return pagamentos?.map(async (pagamento) => {

@@ -1,14 +1,14 @@
 import PagamentoModel from "../../../dataSources/database/models/pagamentoModel";
 import {
+  MsgPedidoPagamentoBody,
   PagamentoDTO,
-  SendPaymentQueueBody,
   statusPagamento,
 } from "../../../domain/entities/types/pagamentoType";
 
 export const pagamentoModel = PagamentoModel.init();
 
 export default class PagamentoRepository {
-  static async criaPagamento(pagamento: SendPaymentQueueBody) {
+  static async criaPagamento(pagamento: MsgPedidoPagamentoBody) {
     const dataObj: PagamentoDTO = {
       ...pagamento,
       statusPagamento: statusPagamento.AGUARDANDO_PAGAMENTO,
@@ -19,16 +19,19 @@ export default class PagamentoRepository {
     return pagamentoModel.pagamento.create(dataObj);
   }
 
-  static async listaPagamento(idPedido: string): Promise<PagamentoDTO> {
+  static async listaPagamento(pedidoId: string): Promise<PagamentoDTO> {
     return pagamentoModel.pagamento.findOne({
-      idPedido,
+      pedidoId,
     }) as unknown as PagamentoDTO;
   }
 
   static async atualizaPagamento(
     id: string,
     pagamento: PagamentoDTO
-  ): Promise<PagamentoDTO | null> {
-    return pagamentoModel.pagamento.findByIdAndUpdate(id, pagamento);
+  ): Promise<PagamentoDTO | null> {    
+    console.log('ID ATUALIZA', id);
+    const x = await pagamentoModel.pagamento.findByIdAndUpdate(id, pagamento);
+    console.log('atualiza pagamento', x);
+    return x as null;
   }
 }

@@ -25,6 +25,6 @@
   "ts-node": {
     "require": ["tsconfig-paths/register"]
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "src/adapters/interfaceAdapters/queues/producers/.empty"],
   "exclude": ["node_modules", "dist"]
 }
