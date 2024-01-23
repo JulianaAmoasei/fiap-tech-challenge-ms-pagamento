@@ -89,8 +89,6 @@ pagamentoRouter.get(
   ) => {
     try {
       const { id } = req.params;
-      console.log('==================');
-      console.log(id);
       const response = await PagamentoController.atualizaStatusPagamento(id);
       if (response) {
         return res.status(204);

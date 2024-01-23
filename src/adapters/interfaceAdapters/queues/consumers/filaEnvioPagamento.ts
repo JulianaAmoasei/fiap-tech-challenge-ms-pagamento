@@ -4,7 +4,7 @@ import MessageBrokerService from "dataSources/messageBroker/messageBrokerService
 import { MsgPedidoPagamentoBody } from "~domain/entities/types/pagamentoType";
 
 const FILA_ENVIO_PAGAMENTO = process.env.FILA_ENVIO_PAGAMENTO as string;
-const DLQ_ENVIO_PAGAMENTO = process.env.DLQ_ENVIO_PAGAMENTO as string;
+const FILA_PAGAMENTO_DLQ_URL = process.env.FILA_PAGAMENTO_DLQ_URL as string;
 
 const queueService = new MessageBrokerService();
 
@@ -21,7 +21,7 @@ async function queueCheck() {
       );
     } catch (err) {
       console.log(err);
-      queueService.enviaParaDLQ(FILA_ENVIO_PAGAMENTO, DLQ_ENVIO_PAGAMENTO, {
+      queueService.enviaParaDLQ(FILA_ENVIO_PAGAMENTO, FILA_PAGAMENTO_DLQ_URL, {
         Body: JSON.stringify(pagamento.body),
         ReceiptHandle: pagamento.receiptHandle as string,
       });

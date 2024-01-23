@@ -28,10 +28,7 @@ export default class PagamentoRepository {
   static async atualizaPagamento(
     id: string,
     pagamento: PagamentoDTO
-  ): Promise<PagamentoDTO | null> {    
-    console.log('ID ATUALIZA', id);
-    const x = await pagamentoModel.pagamento.findByIdAndUpdate(id, pagamento);
-    console.log('atualiza pagamento', x);
-    return x as null;
+  ): Promise<PagamentoDTO | null> {
+    return pagamentoModel.pagamento.findByIdAndUpdate(id, pagamento);
   }
 }

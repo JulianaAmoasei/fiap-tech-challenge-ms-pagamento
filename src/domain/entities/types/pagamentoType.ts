@@ -39,7 +39,7 @@ export interface urlQrcodeQueueBody {
 
 export interface MsgPagtoAtualizadoBody {
   pedidoId: string;
-  statusPagamento: StatusPagamento;
+  statusPagamento: string;
 }
 
 export const statusPagamento = {
