@@ -1,7 +1,7 @@
 import express, { NextFunction } from "express";
 import { Request, Response } from "express";
 
-import PagamentoController from "../../controllers/pagamentoController";
+import PagamentoController from "../controllers/pagamentoController";
 
 // import authenticate from "../middleware/auth";
 // import { validaRequisicao } from "./utils";
@@ -15,8 +15,6 @@ const pagamentoRouter = express.Router();
  *     summary: Consulta pagamento pelo id
  *     tags:
  *       - Pagamento
- *     security:
- *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -24,7 +22,7 @@ const pagamentoRouter = express.Router();
  *           schema:
  *             type: object
  *             properties:
- *               idPedido:
+ *               pedidoId:
  *                 type: string
  *     responses:
  *       200:
@@ -33,7 +31,7 @@ const pagamentoRouter = express.Router();
  *         description: Erro na api.
  */
 pagamentoRouter.get(
-  "/:id",
+  "/pagamentos/:id",
   // authenticate(TipoUsuario.ADMIN),
   // validaRequisicao(RecebimentoDePagamentosSchema),
   async (
@@ -41,9 +39,9 @@ pagamentoRouter.get(
     res: Response,
     next: NextFunction
   ) => {
-    try {
-      const { idPedido } = req.params;
-      const pagamento = await PagamentoController.listaPagamento(idPedido);
+    try {     
+      const { id } = req.params;
+      const pagamento = await PagamentoController.listaPagamento(id);
 
       // TODO: separar util de obj resposta
       if (pagamento) {
@@ -65,21 +63,23 @@ pagamentoRouter.get(
  * @openapi
  * /pagamento:
  *   get:
- *     summary: Consulta lista de pagamentos
+ *     summary: Recebe confirmação de pagamento via provider
  *     tags:
  *       - Pagamento
- *     security:
- *       - bearerAuth: []
  *     requestBody:
- *       required: false
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: string
  *     responses:
- *       200:
- *         description: Lista de objetos Pagamento.
+ *       204:
+ *         description: Mock pagamento efetuado com sucesso.
  *       500:
  *         description: Erro na api.
  */
 pagamentoRouter.get(
-  "/",
+  "/pagamentos/processamento/:id",
   // authenticate(TipoUsuario.ADMIN),
   // validaRequisicao(RecebimentoDePagamentosSchema),
   async (
@@ -88,19 +88,15 @@ pagamentoRouter.get(
     next: NextFunction
   ) => {
     try {
-      const listaPagamentos = await PagamentoController.listaPagamentos();
-
-      // TODO: separar util de obj resposta
-      if (listaPagamentos) {
-        return res.status(200).json({
-          status: "success",
-          listaPagamentos,
-        });
+      const { id } = req.params;
+      const response = await PagamentoController.atualizaStatusPagamento(id);
+      if (response) {
+        return res.status(204);
       } else {
-        throw new Error("Lista de pagamentos não encontrada!");
+        throw new Error("Pagamento não encontrado");
       }
     } catch (err: unknown) {
-      console.log(`Erro ao consultar lista de pagamentos: ${err}`);
+      console.log(`Erro ao consultar pagamento: ${err}`);
       return next(err);
     }
   }

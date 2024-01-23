@@ -1,6 +1,27 @@
 version: '3.4'
 
 services:
+  dev:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    container_name: dev-fiap-soat-ms-pagamento
+    volumes:
+      - .:/app
+    environment:
+      - PORT=3000
+      - NODE_ENV=development
+      - DB_HOST=db
+    #   - DB_USERNAME=user_tech
+    #   - DB_PASSWORD=testtest
+    #   - DB_NAME=fiap-soat-project_db
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+    networks:
+      - fiap-project-network
   app:
     build: .
     container_name: fiap-soat-ms-pagamento
@@ -12,8 +33,8 @@ services:
     #   - DB_NAME=fiap-soat-project_db
     ports:
       - "3000:3000"
-    # depends_on:
-    #   - db
+    depends_on:
+      - db
     networks:
       - fiap-project-network
   db:
@@ -23,7 +44,7 @@ services:
       MONGODB_DB_NAME: DEV_pagamento
       MONGODB_ROOT_USERNAME: root
       MONGODB_ROOT_PASSWORD: admin123
-      MONGODB_CONNECTIONSTRING: mongodb://localhost:27017/DEV_fiap-soat-ms_pagamento_db
+      MONGODB_CONNECTIONSTRING: mongodb://127.0.0.1:27017/DEV_fiap-soat-ms_pagamento_db
     ports:
       - "27017:27017"
     volumes:
