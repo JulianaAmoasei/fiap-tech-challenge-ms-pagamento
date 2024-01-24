@@ -29,13 +29,13 @@ metodoPagamentoRouter.get(
   // validaRequisicao(RecebimentoDePagamentosSchema),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const listaMetodosPagamento = await MetodoPagamentoController.listaMetodosPagamento();
+      const message = await MetodoPagamentoController.listaMetodosPagamento();
 
       // TODO: separar util de obj resposta
-      if (listaMetodosPagamento) {
+      if (message) {
         return res.status(200).json({
           status: "success",
-          listaMetodosPagamento,
+          message,
         });
       } else {
         throw new Error("Lista de métodos de pagamento não encontrada!");
@@ -53,11 +53,14 @@ metodoPagamentoRouter.get(
   // validaRequisicao(RecebimentoDePagamentosSchema),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const metodoPagtoPadrao = await MetodoPagamentoController.retornaMetodoPagamentoPadraoId();
+      const message = await MetodoPagamentoController.retornaMetodoPagamentoPadraoId();
       
       // TODO: separar util de obj resposta
-      if (metodoPagtoPadrao) {
-        return res.status(200).send(metodoPagtoPadrao.id);
+      if (message) {
+        return res.status(200).json({
+          status: "success",
+          message,
+        });
       } else {
         throw new Error("ID método padrão não encontrado!");
       }
