@@ -8,7 +8,6 @@ import {
 import PagtoProviderInterface from "./interfaces/PagtoProviderInterface";
 
 export default class PagtoProvider implements PagtoProviderInterface {
-  static geraCobranca: any;
   async geraCobranca(
     pagamento: MsgPedidoPagamentoBody
   ): Promise<urlQrcodeQueueBody> {

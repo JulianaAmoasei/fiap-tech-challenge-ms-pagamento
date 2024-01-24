@@ -1,3 +1,5 @@
+import PagtoProvider from "dataSources/paymentProvider/pagtoProvider";
+
 import PagamentoUseCase from "~domain/useCases/pagamentoUseCase";
 
 import {
@@ -9,7 +11,7 @@ import PagamentoRepository from "../../repositories/database/pagamentoRepository
 
 export default class PagamentoController {
   static async recebePagamento(pagamento: MsgPedidoPagamentoBody) {
-    await PagamentoUseCase.enviaCobranca(pagamento);
+    await PagamentoUseCase.enviaCobranca(pagamento, new PagtoProvider());
     return PagamentoRepository.criaPagamento(pagamento);
   }
 
@@ -18,11 +20,14 @@ export default class PagamentoController {
   }
 
   static async atualizaStatusPagamento(pedidoId: string) {
+    
     const dadosPagto: PagamentoDTO = await PagamentoRepository.listaPagamento(
       pedidoId
     );
+    
     //parse necessário para acessar o _doc do mongo
     const stringObj = JSON.stringify(dadosPagto);
+
     const pagtoAtualizado = await PagamentoRepository.atualizaPagamento(
       dadosPagto._id?.toString() as string,
       {

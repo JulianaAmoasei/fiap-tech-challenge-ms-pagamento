@@ -1,3 +1,5 @@
+import { v4 as uuidv4 } from "uuid";
+
 import PagamentoModel from "../../../dataSources/database/models/pagamentoModel";
 import {
   MsgPedidoPagamentoBody,
@@ -10,6 +12,7 @@ export const pagamentoModel = PagamentoModel.init();
 export default class PagamentoRepository {
   static async criaPagamento(pagamento: MsgPedidoPagamentoBody) {
     const dataObj: PagamentoDTO = {
+      _id: uuidv4(),
       ...pagamento,
       statusPagamento: statusPagamento.AGUARDANDO_PAGAMENTO,
       createdAt: new Date(),
@@ -29,6 +32,8 @@ export default class PagamentoRepository {
     id: string,
     pagamento: PagamentoDTO
   ): Promise<PagamentoDTO | null> {
-    return pagamentoModel.pagamento.findByIdAndUpdate(id, pagamento);
+    return pagamentoModel.pagamento.findByIdAndUpdate(id, pagamento, {
+      new: true
+    });
   }
 }
