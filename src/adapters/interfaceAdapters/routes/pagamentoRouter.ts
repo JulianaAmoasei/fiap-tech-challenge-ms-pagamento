@@ -2,9 +2,12 @@ import express, { NextFunction } from "express";
 import { Request, Response } from "express";
 
 import PagamentoController from "../controllers/pagamentoController";
+import MessageBrokerService from "dataSources/messageBroker/messageBrokerService";
 
 // import authenticate from "../middleware/auth";
 // import { validaRequisicao } from "./utils";
+
+const queueService = new MessageBrokerService();
 
 const pagamentoRouter = express.Router();
 
@@ -89,7 +92,7 @@ pagamentoRouter.get(
   ) => {
     try {
       const { id } = req.params;
-      const response = await PagamentoController.atualizaStatusPagamento(id);
+      const response = await PagamentoController.atualizaStatusPagamento(queueService, id);
       if (response) {
         return res.status(204);
       } else {

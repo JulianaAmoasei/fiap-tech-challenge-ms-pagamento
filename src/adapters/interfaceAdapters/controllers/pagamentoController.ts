@@ -6,10 +6,12 @@ import {
   statusPagamento,
 } from "../../../domain/entities/types/pagamentoType";
 import PagamentoRepository from "../../repositories/database/pagamentoRepository";
+import QueueRepository from "adapters/repositories/messageBroker/messageBrokerRepository";
+import PagtoProviderInterface from "dataSources/paymentProvider/interfaces/PagtoProviderInterface";
 
 export default class PagamentoController {
-  static async recebePagamento(pagamento: MsgPedidoPagamentoBody) {
-    await PagamentoUseCase.enviaCobranca(pagamento);
+  static async recebePagamento(queueRepository: QueueRepository, pagtoProvider: PagtoProviderInterface, pagamento: MsgPedidoPagamentoBody) {
+    await PagamentoUseCase.enviaCobranca(queueRepository, pagtoProvider,  pagamento);
     return PagamentoRepository.criaPagamento(pagamento);
   }
 
@@ -17,7 +19,7 @@ export default class PagamentoController {
     return PagamentoRepository.listaPagamento(id);
   }
 
-  static async atualizaStatusPagamento(pedidoId: string) {
+  static async atualizaStatusPagamento(queueService: QueueRepository, pedidoId: string) {
     const dadosPagto: PagamentoDTO = await PagamentoRepository.listaPagamento(
       pedidoId
     );
@@ -31,7 +33,7 @@ export default class PagamentoController {
       }
     );
 
-    await PagamentoUseCase.enviaDadosPagtoAtualizados(
+    await PagamentoUseCase.enviaDadosPagtoAtualizados(queueService,
       pagtoAtualizado as PagamentoDTO
     );
     return pagtoAtualizado;

@@ -1,5 +1,6 @@
 import PagamentoController from "adapters/interfaceAdapters/controllers/pagamentoController";
 import MessageBrokerService from "dataSources/messageBroker/messageBrokerService";
+import PagtoProvider from "dataSources/paymentProvider/pagtoProvider";
 
 import { MsgPedidoPagamentoBody } from "~domain/entities/types/pagamentoType";
 
@@ -7,6 +8,7 @@ const FILA_ENVIO_PAGAMENTO = process.env.FILA_ENVIO_PAGAMENTO as string;
 const FILA_PAGAMENTO_DLQ_URL = process.env.FILA_PAGAMENTO_DLQ_URL as string;
 
 const queueService = new MessageBrokerService();
+const pagtoProvider = new PagtoProvider();
 
 async function queueCheck() {
   const pagamentos = await queueService.recebeMensagem<MsgPedidoPagamentoBody>(
@@ -14,7 +16,7 @@ async function queueCheck() {
   );
   return pagamentos?.map(async (pagamento) => {
     try {
-      await PagamentoController.recebePagamento(pagamento.body);
+      await PagamentoController.recebePagamento(queueService, pagtoProvider, pagamento.body);
       await queueService.deletaMensagemProcessada(
         FILA_ENVIO_PAGAMENTO,
         pagamento.receiptHandle as string
