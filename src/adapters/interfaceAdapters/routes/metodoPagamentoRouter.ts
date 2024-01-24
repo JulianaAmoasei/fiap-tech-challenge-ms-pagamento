@@ -54,9 +54,6 @@ metodoPagamentoRouter.get(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const metodoPagtoPadrao = await MetodoPagamentoController.retornaMetodoPagamentoPadraoId();
-
-      console.log('====id=======');
-      console.log(metodoPagtoPadrao.id);
       
       // TODO: separar util de obj resposta
       if (metodoPagtoPadrao) {
