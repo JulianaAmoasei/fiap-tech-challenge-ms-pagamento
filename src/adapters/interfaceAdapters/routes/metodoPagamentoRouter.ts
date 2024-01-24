@@ -24,7 +24,7 @@ const metodoPagamentoRouter = express.Router();
  *         description: Erro na api.
  */
 metodoPagamentoRouter.get(
-  "/metodospagamento",
+  "/api/metodo-pagamento",
   // authenticate(TipoUsuario.ADMIN),
   // validaRequisicao(RecebimentoDePagamentosSchema),
   async (req: Request, res: Response, next: NextFunction) => {
@@ -48,7 +48,7 @@ metodoPagamentoRouter.get(
 );
 
 metodoPagamentoRouter.get(
-  "/metodospagamento/default",
+  "/api/metodo-pagamento/default",
   // authenticate(TipoUsuario.ADMIN),
   // validaRequisicao(RecebimentoDePagamentosSchema),
   async (req: Request, res: Response, next: NextFunction) => {
