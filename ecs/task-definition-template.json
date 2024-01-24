@@ -1,0 +1,41 @@
+{
+    "executionRoleArn": "arn:aws:iam::${AWS_ACCOUT_ID}:role/ecs-task-role",
+    "family": "fiat-tech-producao-family",
+    "containerDefinitions": [
+        {
+            "name": "fiat-tech-producao",
+            "image": "",   
+            "essential": true,
+            "portMappings": [
+                {
+                    "containerPort": 3000,
+                    "hostPort": 3000
+                }
+            ],
+            "environment": [],
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-group": "fiat-tech-produtos",
+                    "awslogs-region": "us-east-1",
+                    "awslogs-create-group": "true",
+                    "awslogs-stream-prefix": "fiat-tech-produtos"
+                }
+            }
+        }
+    ],
+    "networkMode": "awsvpc",
+    "compatibilities": [
+        "EC2",
+        "FARGATE"
+    ],
+    "requiresCompatibilities": [
+        "FARGATE"
+    ],
+    "cpu": "256",
+    "memory": "512",
+    "runtimePlatform": {
+        "cpuArchitecture": "X86_64",
+        "operatingSystemFamily": "LINUX"
+    }
+}

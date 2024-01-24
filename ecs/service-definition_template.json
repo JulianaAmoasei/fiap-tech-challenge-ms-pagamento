@@ -1,0 +1,13 @@
+{
+    "cluster": "${CLUSTER_NAME}",
+    "serviceName": "${SERVICE_NAME}",
+    "taskDefinition": "${TASK_DEFINITION}",
+    "desiredCount": 1,
+    "networkConfiguration": {
+      "awsvpcConfiguration": {
+        "subnets": ["${SUB_NET_1}", "${SUB_NET_2}", "${SUB_NET_3}"],
+        "securityGroups": ["${SECURITY_GROUPS}"]
+      }
+    }
+  }
+  
