@@ -20,11 +20,10 @@ export default class PagamentoController {
   }
 
   static async atualizaStatusPagamento(pedidoId: string) {
-    
     const dadosPagto: PagamentoDTO = await PagamentoRepository.listaPagamento(
       pedidoId
     );
-    
+
     //parse necessário para acessar o _doc do mongo
     const stringObj = JSON.stringify(dadosPagto);
 

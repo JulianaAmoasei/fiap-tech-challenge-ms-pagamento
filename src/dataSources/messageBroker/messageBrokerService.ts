@@ -111,7 +111,7 @@ export default class MessageBrokerService implements QueueRepository {
       const data = await this.sqsClient.send(command);
       if (data.Messages && data.Messages.length > 0) {
         console.log(`Mensagens recebidas: ${data.Messages.length}`);
-        return data?.Messages?.reduce(
+        return data.Messages.reduce(
           (mensagens: MensagemResponse<T>[], mensagemReceived) => {
             try {
               const body = JSON.parse(mensagemReceived?.Body as string);
