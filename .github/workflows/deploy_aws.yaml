@@ -1,0 +1,103 @@
+name: Deploy AWS
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    name: Run test and lint
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 20
+          cache: "yarn"
+      - run: yarn install --frozen-lockfile
+      - run: yarn test
+      - run: npx eslint . --ext .js,.jsx,.ts,.tsx
+
+  build_and_publish_image:
+    needs: [test]
+    name: Push Docker image to Docker Hub
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: |
+            ${{ secrets.DOCKER_HUB_USERNAME }}/${{ secrets.DOCKER_IMAGE_NAME }}:latest
+
+  deploy-eks:
+    needs: [build_and_publish_image]
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+      - name: Config ECS Role
+        run: |
+          sed -e "s/\${AWS_ACCOUT_ID}/${AWS_ACCOUT_ID}/g" ecs/task-definition_template.json > ecs/task-definition.json
+      - name: Fill in the new image ID in the Amazon ECS task definition
+        id: task-def
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: ecs/task-definition.json
+          container-name: fiat-tech-producao
+          image: ${{ secrets.DOCKER_HUB_USERNAME }}/${{ secrets.DOCKER_IMAGE_NAME }}:latest
+          environment-variables: |
+            NODE_ENV=${{ secrets.NODE_ENV }}
+            PORT=${{ secrets.PORT }}
+            AWS_REGION=${{ secrets.AWS_REGION }}
+            AWS_ACCESS_KEY=${{ secrets.AWS_ACCESS_KEY }}
+            AWS_SECRET_KEY=${{ secrets.AWS_SECRET_KEY }}
+            MONGODB_CONNECTIONSTRING=${{ secrets.MONGODB_CONNECTIONSTRING }}
+            MONGODB_DB_NAME=${{ secrets.MONGODB_DB_NAME }}
+            FILA_PEDIDO_PAGO=${{ secrets.FILA_PEDIDO_PAGO }}
+            URL_FILA_PEDIDO_PAGO=${{ secrets.URL_FILA_PEDIDO_PAGO }}
+            URL_FILA_ENVIO_COBRANCA=${{ secrets.URL_FILA_ENVIO_COBRANCA }}
+            FILA_ENVIO_COBRANCA=${{ secrets.FILA_ENVIO_COBRANCA }}
+            FILA_ENVIO_PAGAMENTO=${{ secrets.FILA_ENVIO_PAGAMENTO }}
+            URL_FILA_ENVIO_PAGAMENTO=${{ secrets.URL_FILA_ENVIO_PAGAMENTO }}
+            URL_FILA_ENVIO_PAGAMENTO_DLQ=${{ secrets.URL_FILA_ENVIO_PAGAMENTO_DLQ }}
+
+      - name: Deploy Amazon ECS task definition
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        with:
+          force-new-deployment: true
+          task-definition: ${{ steps.task-def.outputs.task-definition }}
+          cluster: ${{ secrets.ECS_CLUESTER }}
+
+      - name: Create and Deploy New ECS Service
+        env:
+          CLUSTER_NAME: ${{ secrets.CLUSTER_NAME }}
+          SERVICE_NAME: ${{ secrets.SERVICE_NAME  }}
+          TASK_DEFINITION: fiat-tech-producao-family
+          SUB_NET_1: ${{ secrets.SUB_NET_1 }}
+          SUB_NET_2: ${{ secrets.SUB_NET_2 }}
+          SUB_NET_3: ${{ secrets.SUB_NET_3 }}
+          SECURITY_GROUPS: ${{ secrets.SECURITY_GROUPS }}
+        run: |
+          sed -e "s/\${CLUSTER_NAME}/${CLUSTER_NAME}/g" -e "s/\${SERVICE_NAME}/${SERVICE_NAME}/g" -e "s/\${TASK_DEFINITION}/${TASK_DEFINITION}/g" -e "s/\${SUB_NET_1}/${SUB_NET_1}/g" -e "s/\${SUB_NET_2}/${SUB_NET_2}/g" -e "s/\${SUB_NET_3}/${SUB_NET_3}/g" -e "s/\${SECURITY_GROUPS}/${SECURITY_GROUPS}/g" ecs/service-definition_template.json > ecs/service-definition.json
+          aws ecs update-service --cluster ${{ secrets.CLUSTER_NAME }} --service ${{ secrets.SERVICE_NAME }} --force-new-deployment --region ${{ secrets.AWS_REGION }} || aws ecs create-service --cli-input-json file://ecs/service-definition.json
