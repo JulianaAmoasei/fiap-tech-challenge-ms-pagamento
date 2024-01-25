@@ -1,5 +1,4 @@
-import { v4 as uuidv4 } from "uuid";
-
+import { ObjectId } from "mongodb";
 import PagamentoModel from "../../../dataSources/database/models/pagamentoModel";
 import {
   MsgPedidoPagamentoBody,
@@ -12,7 +11,7 @@ export const pagamentoModel = PagamentoModel.init();
 export default class PagamentoRepository {
   static async criaPagamento(pagamento: MsgPedidoPagamentoBody) {
     const dataObj: PagamentoDTO = {
-      _id: uuidv4(),
+      _id: String(new ObjectId()),
       ...pagamento,
       statusPagamento: statusPagamento.AGUARDANDO_PAGAMENTO,
       createdAt: new Date(),
