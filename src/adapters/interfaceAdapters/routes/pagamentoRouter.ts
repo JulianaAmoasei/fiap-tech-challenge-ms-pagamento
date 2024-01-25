@@ -1,8 +1,8 @@
+import MessageBrokerService from "dataSources/messageBroker/messageBrokerService";
 import express, { NextFunction } from "express";
 import { Request, Response } from "express";
 
 import PagamentoController from "../controllers/pagamentoController";
-import MessageBrokerService from "dataSources/messageBroker/messageBrokerService";
 
 // import authenticate from "../middleware/auth";
 // import { validaRequisicao } from "./utils";
@@ -86,7 +86,7 @@ pagamentoRouter.get(
       const { id } = req.params;
       const response = await PagamentoController.atualizaStatusPagamento(queueService, id);
       if (response) {
-        return res.status(204);
+        return res.status(204).send();
       } else {
         throw new Error("Pagamento não encontrado");
       }

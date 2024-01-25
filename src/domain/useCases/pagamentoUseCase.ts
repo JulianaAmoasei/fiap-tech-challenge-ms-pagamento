@@ -1,6 +1,5 @@
 import QueueRepository from 'adapters/repositories/messageBroker/messageBrokerRepository';
 import PagtoProviderInterface from 'dataSources/paymentProvider/interfaces/PagtoProviderInterface';
-import PagtoProvider from 'dataSources/paymentProvider/pagtoProvider';
 
 import { MsgPagtoAtualizadoBody, MsgPedidoPagamentoBody, PagamentoDTO, urlQrcodeQueueBody } from '~domain/entities/types/pagamentoType';
 
@@ -16,6 +15,6 @@ export default class PagamentoUseCase {
       pedidoId: dadosPagamento.pedidoId,
       statusPagamento: dadosPagamento.statusPagamento
     }
-    queueRepository.enviaParaFila<MsgPagtoAtualizadoBody>(body, process.env.URL_FILA_ATUALIZACAO_STATUS_PAGTO as string);
+    queueRepository.enviaParaFila<MsgPagtoAtualizadoBody>(body, process.env.URL_FILA_PEDIDO_PAGO as string);
   }
 }

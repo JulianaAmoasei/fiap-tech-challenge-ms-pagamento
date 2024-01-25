@@ -1,4 +1,6 @@
-import PagtoProvider from "dataSources/paymentProvider/pagtoProvider";
+
+import QueueRepository from "adapters/repositories/messageBroker/messageBrokerRepository";
+import PagtoProviderInterface from "dataSources/paymentProvider/interfaces/PagtoProviderInterface";
 
 import PagamentoUseCase from "~domain/useCases/pagamentoUseCase";
 
@@ -8,8 +10,6 @@ import {
   statusPagamento,
 } from "../../../domain/entities/types/pagamentoType";
 import PagamentoRepository from "../../repositories/database/pagamentoRepository";
-import QueueRepository from "adapters/repositories/messageBroker/messageBrokerRepository";
-import PagtoProviderInterface from "dataSources/paymentProvider/interfaces/PagtoProviderInterface";
 
 export default class PagamentoController {
   static async recebePagamento(queueRepository: QueueRepository, pagtoProvider: PagtoProviderInterface, pagamento: MsgPedidoPagamentoBody) {
