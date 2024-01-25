@@ -2,9 +2,12 @@ import express, { NextFunction } from "express";
 import { Request, Response } from "express";
 
 import PagamentoController from "../controllers/pagamentoController";
+import MessageBrokerService from "dataSources/messageBroker/messageBrokerService";
 
 // import authenticate from "../middleware/auth";
 // import { validaRequisicao } from "./utils";
+
+const queueService = new MessageBrokerService();
 
 const pagamentoRouter = express.Router();
 
@@ -81,11 +84,9 @@ pagamentoRouter.get(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { id } = req.params;
-
-      const response = await PagamentoController.atualizaStatusPagamento(id);
-
-      if (response?.statusPagamento === "Pagamento concluído") {
-        return res.status(204).send();
+      const response = await PagamentoController.atualizaStatusPagamento(queueService, id);
+      if (response) {
+        return res.status(204);
       } else {
         throw new Error("Pagamento não encontrado");
       }
