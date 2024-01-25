@@ -6,9 +6,9 @@ export const metodoPagamentoModel = MetodoPagamentoModel.init();
 
 export default class MetodoPagamentoRepository {
   static async listaMetodosPagamento(): Promise<MetodoPagamentoDTO[]> {
-    return metodoPagamentoModel.metodoPagamento.find() as unknown as MetodoPagamentoDTO[];
+    return metodoPagamentoModel.metodoPagamento.find().select('-_id -__v') as unknown as MetodoPagamentoDTO[];
   }
   static async getMetodoPagamentoPadraoId(): Promise<MetodoPagamentoPadraoDTO> {
-    return metodoPagamentoModel.metodoPagamento.findOne({ nome: "QR Code" }) as unknown as MetodoPagamentoPadraoDTO;
+    return metodoPagamentoModel.metodoPagamento.findOne({ nome: "QR Code" }).select('-_id -__v') as unknown as MetodoPagamentoPadraoDTO;
   }
 }
