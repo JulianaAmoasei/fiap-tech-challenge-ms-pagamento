@@ -1,3 +1,5 @@
+import { v4 as uuidv4 } from "uuid";
+
 import { PagamentoInput } from "./types/pagamentoType";
 
 export default class Pagamento {
@@ -11,7 +13,7 @@ export default class Pagamento {
   public updatedAt: Date | null;
 
   constructor(PagamentoInput: PagamentoInput) {
-    this._id = PagamentoInput._id;
+    this._id = PagamentoInput._id ?? uuidv4();
     this.pedidoId = PagamentoInput.pedidoId;
     this.valor = PagamentoInput.valor;
     this.metodoDePagamento = PagamentoInput.metodoDePagamento;
