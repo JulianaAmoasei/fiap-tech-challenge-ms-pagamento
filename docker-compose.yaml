@@ -22,6 +22,18 @@ services:
       - db
     networks:
       - fiap-project-network
+  test:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: test
+    container_name: test_dev-fiap-soat-ms-pagamento
+    command: yarn run test
+    working_dir: /app
+    ports:
+      - "4000:4000"
+    volumes:
+      - ./:/app:cached
   app:
     build: .
     container_name: fiap-soat-ms-pagamento

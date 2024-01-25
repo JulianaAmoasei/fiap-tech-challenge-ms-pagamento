@@ -17,7 +17,7 @@
     "start": "node dist/index.js",
     "dev": "nodemon -L src/index.ts",
     "lint": "eslint . --ext .ts --fix",
-    "test": "npx tsc && jest --silent=false"
+    "test": "npx tsc && jest --silent=false --coverage"
   },
   "devDependencies": {
     "@commitlint/cli": "^17.6.3",
