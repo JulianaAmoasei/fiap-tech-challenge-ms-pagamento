@@ -24,7 +24,7 @@ export default class PagamentoController {
     const dadosPagto: PagamentoDTO = await PagamentoRepository.listaPagamento(
       pedidoId
     );
-    
+
     //parse necessário para acessar o _doc do mongo
     const stringObj = JSON.stringify(dadosPagto);
 

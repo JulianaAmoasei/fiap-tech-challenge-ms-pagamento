@@ -20,11 +20,14 @@
       "~presenters/*": ["presenters/*"],
       "~domain/*": ["domain/*"]
     },
-    "typeRoots": ["./src/@types","./node_modules/@types"]
+    "typeRoots": ["./src/@types", "./node_modules/@types"]
   },
   "ts-node": {
     "require": ["tsconfig-paths/register"]
   },
-  "include": ["src/**/*", "src/adapters/interfaceAdapters/queues/producers/.empty"],
+  "include": [
+    "src/**/*",
+    "src/adapters/interfaceAdapters/queues/producers/.empty"
+  ],
   "exclude": ["node_modules", "dist"]
 }
