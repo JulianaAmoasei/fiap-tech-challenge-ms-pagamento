@@ -31,6 +31,8 @@ export default class PagamentoRepository {
     id: string,
     pagamento: PagamentoDTO
   ): Promise<PagamentoDTO | null> {
-    return pagamentoModel.pagamento.findByIdAndUpdate(id, pagamento);
+    return pagamentoModel.pagamento.findByIdAndUpdate(id, pagamento, {
+      new: true
+    });
   }
 }

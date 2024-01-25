@@ -96,7 +96,7 @@ export default class MessageBrokerService implements QueueRepository {
 
       return true;
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
 
     return false;
@@ -118,8 +118,6 @@ export default class MessageBrokerService implements QueueRepository {
         return data?.Messages?.reduce(
           (mensagens: MensagemResponse<T>[], mensagemReceived) => {
             try {
-              console.log("data");
-              console.log(mensagemReceived?.Body);
               const body = JSON.parse(mensagemReceived?.Body as string);
               mensagens.push({
                 receiptHandle: mensagemReceived.ReceiptHandle,

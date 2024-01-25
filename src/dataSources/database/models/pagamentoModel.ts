@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 export default class PagamentoModel {
   static init() {
     const pagamentoSchema = new mongoose.Schema({
-      _id: { type: mongoose.Schema.Types.ObjectId },
+      _id: { type: mongoose.Schema.Types.String },
       pedidoId: { type: mongoose.Schema.Types.String },
       valor: { type: mongoose.Schema.Types.Number },
       metodoDePagamento: { type: mongoose.Schema.Types.String },
