@@ -16,13 +16,15 @@
     "build": "npx tsc && npx tsc-alias -p tsconfig.json",
     "start": "node dist/index.js",
     "dev": "nodemon -L src/index.ts",
-    "lint": "eslint . --ext .ts --fix",
-    "test": "npx tsc && jest --silent=false"
+    "lint": "eslint . --ext .ts",
+    "test": "npx tsc && jest --silent=false --coverage"
   },
   "devDependencies": {
     "@commitlint/cli": "^17.6.3",
     "@commitlint/config-conventional": "^17.6.3",
+    "@cucumber/cucumber": "^10.2.1",
     "@jest/globals": "^29.7.0",
+    "@types/cucumber": "^7.0.0",
     "@types/express": "^4.17.17",
     "@types/jest": "^29.5.5",
     "@types/jsonwebtoken": "^9.0.4",
@@ -65,9 +67,7 @@
     "mongodb": "^6.3.0",
     "mongoose": "^8.0.3",
     "morgan": "^1.10.0",
-    "mysql2": "^3.3.2",
     "qrcode": "^1.5.3",
-    "sequelize": "^6.31.1",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^4.6.3",
     "uuid": "^9.0.0",
