@@ -15,6 +15,6 @@ jobs:
       with:
         node-version: 18
         cache: 'yarn'
-    - run: yarn install --frozen-lockfile
-    - run: yarn test
+    - run: yarn install
+    - run: yarn test --coverage
     - run: npx eslint . --ext .js,.jsx,.ts,.tsx
