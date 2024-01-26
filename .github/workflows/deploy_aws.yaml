@@ -1,0 +1,115 @@
+name: Deploy AWS
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    name: Tests
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 20
+        cache: 'yarn'
+
+    - name: Run test and lint
+      run: |
+        yarn install --frozen-lockfile
+        yarn test --coverage
+        npx eslint src --ext .js,.jsx,.ts,.tsx
+
+    - name: SonarQube Scan
+      uses: sonarsource/sonarqube-scan-action@master
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        SONAR_HOST_URL: 'https://sonarcloud.io'
+  build_and_publish_image:
+    needs: [ test ]
+    name: Push Docker image to Docker Hub
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+      
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: eltonarodrigues/test-fiap-ci
+      
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: |
+            ${{ secrets.DOCKER_HUB_USERNAME }}/${{ secrets.DOCKER_IMAGE_NAME }}:latest
+
+  deploy-eks:
+    needs: [ build_and_publish_image ]
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+            aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+            aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
+            aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Fill in the new image ID in the Amazon ECS task definition
+        id: task-def
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: ecs/task-definition-template.json
+          container-name: fiat-tech-producao
+          image: eltonarodrigues/fiap-tech-challenge-soat-grupo-30:latest # TODO
+          environment-variables: |
+              NODE_ENV=${{ secrets.NODE_ENV }}
+              DB_HOST=${{ secrets.DB_HOST }}
+              DB_NAME=${{ secrets.DB_NAME }}
+              DB_PORT=${{ secrets.DB_PORT }}
+              PRODUTO_MS_URL=${{ secrets.PRODUTO_MS_URL }}
+              FILA_PAGAMENTO_URL=${{ secrets.FILA_PAGAMENTO_URL }}
+              AWS_REGION=${{ secrets.AWS_REGION }}
+              AWS_ACCESS_KEY=${{ secrets.AWS_ACCESS_KEY }}
+              AWS_SECRET_KEY=${{ secrets.AWS_SECRET_KEY }}
+              FILA_ENVIO_PAGAMENTO=${{ secrets.FILA_ENVIO_PAGAMENTO }}
+
+      - name: Deploy Amazon ECS task definition
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        with:
+          force-new-deployment: true
+          task-definition: ${{ steps.task-def.outputs.task-definition }}
+          cluster: ${{ secrets.ECS_CLUSTER }}
+
+      - name: Create and Deploy New ECS Service
+        env: 
+          CLUSTER_NAME: ${{ secrets.CLUSTER_NAME }}
+          SERVICE_NAME: ${{ secrets.SERVICE_NAME  }}
+          TASK_DEFINITION: pagamento
+          SUB_NET_1: ${{ secrets.SUB_NET_1 }}
+          SUB_NET_2: ${{ secrets.SUB_NET_2 }}
+          SUB_NET_3: ${{ secrets.SUB_NET_3 }}
+          SECURITY_GROUPS: ${{ secrets.SECURITY_GROUPS }}
+        run: |
+          sed -e "s/\${CLUSTER_NAME}/${CLUSTER_NAME}/g" -e "s/\${SERVICE_NAME}/${SERVICE_NAME}/g" -e "s/\${TASK_DEFINITION}/${TASK_DEFINITION}/g" -e "s/\${SUB_NET_1}/${SUB_NET_1}/g" -e "s/\${SUB_NET_2}/${SUB_NET_2}/g" -e "s/\${SUB_NET_3}/${SUB_NET_3}/g" -e "s/\${SECURITY_GROUPS}/${SECURITY_GROUPS}/g" ecs/service-definition_template.json > ecs/service-definition.json
+          cat ecs/service-definition.json
+          aws ecs update-service --cluster ${{ secrets.CLUSTER_NAME }} --service ${{ secrets.SERVICE_NAME }} --force-new-deployment --region ${{ secrets.AWS_REGION }} || aws ecs create-service --cli-input-json file://ecs/service-definition.json
