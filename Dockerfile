@@ -20,8 +20,13 @@ CMD ["yarn", "run", "test"]
 
 # Production
 FROM base AS production
+WORKDIR /app
+COPY package.json yarn.lock tsconfig.json ./
+RUN yarn install --frozen-lockfile
+COPY src ./src
+RUN yarn run build
+ENV NODE_ENV=production
 COPY --from=build /app/package.json /app/yarn.lock ./
 COPY --from=build /app/dist ./dist
-RUN yarn run build
-EXPOSE 8080
-CMD ["node", "dist/index.js"]
+RUN yarn install --frozen-lockfile --production
+CMD [ "node", "dist/index.js" ]
