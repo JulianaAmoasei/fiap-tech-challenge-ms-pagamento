@@ -1,5 +1,4 @@
 import { metodoPagamentoModel } from "adapters/repositories/database/metodoPagamentoRepository";
-import { v4 as uuidv4 } from "uuid";
 
 const metodosPagamento = [
   {
@@ -20,7 +19,7 @@ const metodosPagamento = [
   }
 ]
 
-async function seedDb(listaItens: any): Promise<void> {
+async function seedDb(listaItens: unknown): Promise<void> {
   await metodoPagamentoModel.metodoPagamento.deleteMany();
   await metodoPagamentoModel.metodoPagamento.insertMany(listaItens);
 }
