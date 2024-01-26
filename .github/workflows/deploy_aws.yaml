@@ -30,6 +30,7 @@ jobs:
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         SONAR_HOST_URL: 'https://sonarcloud.io'
+
   build_and_publish_image:
     needs: [ test ]
     name: Push Docker image to Docker Hub
@@ -58,7 +59,7 @@ jobs:
           push: true
           tags: |
             ${{ secrets.DOCKER_HUB_USERNAME }}/${{ secrets.DOCKER_IMAGE_NAME }}:latest
-
+            
   deploy-eks:
     needs: [ build_and_publish_image ]
     runs-on: ubuntu-latest
