@@ -6,7 +6,7 @@
   "author": "Juliana Amoasei <juliana.amoasei@gmail.com>",
   "license": "MIT",
   "engines": {
-    "node": "18.x",
+    "node": "20.x",
     "npm": "please-use-yarn",
     "yarn": ">= 1.19.1"
   },
