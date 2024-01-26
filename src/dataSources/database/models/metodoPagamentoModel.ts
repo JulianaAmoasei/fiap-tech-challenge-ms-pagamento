@@ -5,6 +5,7 @@ export default class MetodoPagamentoModel {
     const metodoPagamentoSchema = new mongoose.Schema(
       {
         _id: { type: mongoose.Schema.Types.String },
+        id: { type: mongoose.Schema.Types.String },
         nome: { type: mongoose.Schema.Types.String },
         ativo: { type: mongoose.Schema.Types.Boolean },
         createdAt: { type: mongoose.Schema.Types.Date },

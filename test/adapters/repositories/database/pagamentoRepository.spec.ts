@@ -7,6 +7,7 @@ import {
 } from "../../../../src/domain/entities/types/pagamentoType";
 
 describe("pagamento repository", () => {
+  const createdAt = new Date();
   it("Deve criar um pagamento", async () => {
     const pagamento: PagamentoDTO = {
       _id: "1234-1234-1234",
@@ -14,7 +15,7 @@ describe("pagamento repository", () => {
       valor: 10,
       metodoDePagamento: "QR Code",
       statusPagamento: statusPagamento.AGUARDANDO_PAGAMENTO,
-      createdAt: new Date(),
+      createdAt,
       deletedAt: null,
       updatedAt: null,
     };
@@ -25,7 +26,7 @@ describe("pagamento repository", () => {
       valor: 10,
       metodoDePagamento: "QR Code",
       statusPagamento: statusPagamento.AGUARDANDO_PAGAMENTO,
-      createdAt: new Date(),
+      createdAt,
       deletedAt: null,
       updatedAt: null,
     });
@@ -42,7 +43,7 @@ describe("pagamento repository", () => {
       valor: 10,
       metodoDePagamento: "QR Code",
       statusPagamento: statusPagamento.AGUARDANDO_PAGAMENTO,
-      createdAt: new Date(),
+      createdAt,
       deletedAt: null,
       updatedAt: null,
     };
@@ -53,7 +54,7 @@ describe("pagamento repository", () => {
       valor: 10,
       metodoDePagamento: "QR Code",
       statusPagamento: statusPagamento.AGUARDANDO_PAGAMENTO,
-      createdAt: new Date(),
+      createdAt,
       deletedAt: null,
       updatedAt: null,
     });
@@ -70,7 +71,7 @@ describe("pagamento repository", () => {
       valor: 10,
       metodoDePagamento: "QR Code",
       statusPagamento: statusPagamento.PAGAMENTO_CONCLUIDO,
-      createdAt: new Date(),
+      createdAt,
       deletedAt: null,
       updatedAt: null,
     };
@@ -81,7 +82,7 @@ describe("pagamento repository", () => {
       valor: 10,
       metodoDePagamento: "QR Code",
       statusPagamento: statusPagamento.PAGAMENTO_CONCLUIDO,
-      createdAt: new Date(),
+      createdAt,
       deletedAt: null,
       updatedAt: null,
     });
