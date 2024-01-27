@@ -28,16 +28,19 @@ metodoPagamentoRouter.get(
   "/api/metodo-pagamento",
   // authenticate(TipoUsuario.ADMIN),
   // validaRequisicao(RecebimentoDePagamentosSchema),
-  async (req: Request, res: Response, next: NextFunction): Promise<void | object> => {
+  async (req: Request, res: Response, next: NextFunction): Promise<any> => {
     try {
       const message = await MetodoPagamentoController.listaMetodosPagamento();
-      if (!message) {
+
+      // TODO: separar util de obj resposta
+      if (message) {
+        return res.status(200).json({
+          status: "success",
+          message,
+        });
+      } else {
         throw new Error("Lista de métodos de pagamento não encontrada!");
-      } 
-      return res.status(200).json({
-        status: "success",
-        message,
-      });
+      }
     } catch (err: unknown) {
       console.error(`Erro ao consultar lista de pagamentos: ${err}`);
       return next(err);
@@ -49,16 +52,19 @@ metodoPagamentoRouter.get(
   "/api/metodo-pagamento/default",
   // authenticate(TipoUsuario.ADMIN),
   // validaRequisicao(RecebimentoDePagamentosSchema),
-  async (req: Request, res: Response, next: NextFunction): Promise<void | object> => {
+  async (req: Request, res: Response, next: NextFunction): Promise<any> => {
     try {
       const message = await MetodoPagamentoController.retornaMetodoPagamentoPadraoId();
-      if (!message) {
+      
+      // TODO: separar util de obj resposta
+      if (message) {
+        return res.status(200).json({
+          status: "success",
+          message,
+        });
+      } else {
         throw new Error("ID método padrão não encontrado!");
       }
-      return res.status(200).json({
-        status: "success",
-        message,
-      });
     } catch (err: unknown) {
       console.error(`Erro ao consultar método de pagamento padrão: ${err}`);
       return next(err);
