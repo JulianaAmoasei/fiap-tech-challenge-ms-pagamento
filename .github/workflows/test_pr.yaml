@@ -18,7 +18,7 @@ jobs:
       with:
         node-version: 20
         cache: 'yarn'
-
+              
     - name: Run test and lint
       run: |
         yarn install
@@ -30,4 +30,3 @@ jobs:
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         SONAR_HOST_URL: 'https://sonarcloud.io'
-        
