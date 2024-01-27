@@ -38,20 +38,17 @@ pagamentoRouter.get(
   "/pagamentos/:id",
   // authenticate(TipoUsuario.ADMIN),
   // validaRequisicao(RecebimentoDePagamentosSchema),
-  async (req: Request, res: Response, next: NextFunction): Promise<any> => {
+  async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { id } = req.params;
       const pagamento = await PagamentoController.listaPagamento(id);
-
-      // TODO: separar util de obj resposta
-      if (pagamento) {
-        return res.status(200).json({
-          status: "success",
-          pagamento,
-        });
-      } else {
+      if (!pagamento) {
         throw new Error("Pagamento não encontrado!");
       }
+      return res.status(200).json({
+        status: "success",
+        pagamento,
+      });
     } catch (err: unknown) {
       console.error(`Erro ao consultar pagamento: ${err}`);
       return next(err);
@@ -82,15 +79,14 @@ pagamentoRouter.get(
   "/pagamentos/processamento/:id",
   // authenticate(TipoUsuario.ADMIN),
   // validaRequisicao(RecebimentoDePagamentosSchema),
-  async (req: Request, res: Response, next: NextFunction): Promise<any> => {
+  async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { id } = req.params;
       const response = await PagamentoController.atualizaStatusPagamento(queueService, id);
-      if (response) {
-        return res.status(204).send();
-      } else {
+      if (!response) {
         throw new Error("Pagamento não encontrado");
       }
+      return res.status(204).send();
     } catch (err: unknown) {
       console.error(`Erro ao consultar pagamento: ${err}`);
       return next(err);
