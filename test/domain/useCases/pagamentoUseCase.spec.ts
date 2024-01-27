@@ -1,7 +1,75 @@
 import PagamentoRepository from "../../../src/adapters/repositories/database/pagamentoRepository";
-import { statusPagamento } from "../../../src/domain/entities/types/pagamentoType";
+import QueueRepository from "../../../src/adapters/repositories/messageBroker/messageBrokerRepository";
+import PagtoProviderInterface from "../../../src/dataSources/paymentProvider/interfaces/PagtoProviderInterface";
+import { MsgPedidoPagamentoBody,PagamentoDTO, statusPagamento } from "../../../src/domain/entities/types/pagamentoType";
+import PagamentoUseCase from "../../../src/domain/useCases/pagamentoUseCase";
 
 describe("PagamentoUseCases", () => {
+  it("enviaCobranca deve chamar geraCobranca e enviaParaFila", async () => {
+    const queueRepositoryMock: QueueRepository = {
+      enviaParaFila: jest.fn(),
+      recebeMensagem: jest.fn(),
+      deletaMensagemProcessada: jest.fn(),
+      enviaParaDLQ: jest.fn(),
+    };
+
+    const pagtoProviderMock: PagtoProviderInterface = {
+      geraCobranca: jest
+        .fn()
+        .mockResolvedValue({
+          pedidoId: "123",
+          qrUrl: "http://apipagamento.com",
+        }),
+    };
+
+    const pagamento: MsgPedidoPagamentoBody = {
+      pedidoId: "123",
+      metodoDePagamento: "credit card",
+      valor: 100,
+    };
+
+    await PagamentoUseCase.enviaCobranca(
+      queueRepositoryMock,
+      pagtoProviderMock,
+      pagamento
+    );
+
+    expect(pagtoProviderMock.geraCobranca).toHaveBeenCalledWith(pagamento);
+    expect(queueRepositoryMock.enviaParaFila).toHaveBeenCalledWith(
+      { pedidoId: "123", qrUrl: "http://apipagamento.com" },
+      process.env.URL_FILA_ENVIO_COBRANCA
+    );
+  });
+
+  it("enviaDadosAtualizados deve chamar enviaParaFila corretamente", async () => {
+    const queueRepositoryMock: QueueRepository = {
+      enviaParaFila: jest.fn(),
+      recebeMensagem: jest.fn(),
+      deletaMensagemProcessada: jest.fn(),
+      enviaParaDLQ: jest.fn(),
+    };
+
+    const dadosPagamento: PagamentoDTO = {
+      pedidoId: "123",
+      valor: 20,
+      metodoDePagamento: "QR Code",
+      statusPagamento: statusPagamento.PAGAMENTO_CONCLUIDO,
+      createdAt: new Date(),
+      deletedAt: null,
+      updatedAt: null,
+    };
+
+    await PagamentoUseCase.enviaDadosPagtoAtualizados(
+      queueRepositoryMock,
+      dadosPagamento
+    );
+
+    expect(queueRepositoryMock.enviaParaFila).toHaveBeenCalledWith(
+      { pedidoId: "123", statusPagamento: statusPagamento.PAGAMENTO_CONCLUIDO },
+      process.env.URL_FILA_PEDIDO_PAGO
+    );
+  });
+
   const mockMsgPagamento = {
     pedidoId: "1234-1234-1234",
     metodoDePagamento: "1234-1234-1234",
