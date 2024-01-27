@@ -98,7 +98,6 @@ jobs:
               FILA_ENVIO_PAGAMENTO=${{ secrets.FILA_ENVIO_PAGAMENTO }}
               URL_FILA_ENVIO_PAGAMENTO=${{ secrets.URL_FILA_ENVIO_PAGAMENTO }}
               URL_FILA_ENVIO_PAGAMENTO_DLQ=${{ secrets.URL_FILA_ENVIO_PAGAMENTO_DLQ }}
-              AWS_ECS_ROLE=${{ secrets.AWS_ECS_ROLE }}
 
       - name: Deploy Amazon ECS task definition
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
