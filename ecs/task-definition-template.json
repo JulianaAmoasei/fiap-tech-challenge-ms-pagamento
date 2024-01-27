@@ -1,0 +1,41 @@
+{
+  "executionRoleArn": "${EXECUTION_ROLE_ARN}",
+  "family": "fiap-tech-pagamento-family",
+  "containerDefinitions": [
+      {
+          "name": "fiap-tech-pagamento",
+          "image": "",   
+          "essential": true,
+          "portMappings": [
+              {
+                  "containerPort": 8080,
+                  "hostPort": 80
+              }
+          ],
+          "environment": [],
+          "logConfiguration": {
+              "logDriver": "awslogs",
+              "options": {
+                  "awslogs-group": "fiap-tech-pagamento",
+                  "awslogs-region": "us-east-1",
+                  "awslogs-create-group": "true",
+                  "awslogs-stream-prefix": "fiap-tech-pagamento"
+              }
+          }
+      }
+  ],
+  "networkMode": "awsvpc",
+  "compatibilities": [
+      "EC2",
+      "FARGATE"
+  ],
+  "requiresCompatibilities": [
+      "FARGATE"
+  ],
+  "cpu": "256",
+  "memory": "512",
+  "runtimePlatform": {
+      "cpuArchitecture": "X86_64",
+      "operatingSystemFamily": "LINUX"
+  }
+}
