@@ -69,11 +69,18 @@ jobs:
             aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
             aws-region: ${{ secrets.AWS_REGION }}
 
+      - name: Update ECS TASK Definition
+        env: 
+          AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+          AWS_ECS_ROLE: ${{ secrets.AWS_ECS_ROLE }}
+        run: |
+          sed -e "s/\${AWS_ACCOUNT_ID}/${AWS_ACCOUNT_ID}/g" -e "s/\${AWS_ECS_ROLE}/${AWS_ECS_ROLE}/g" ecs/task-definition-template.json > ecs/task-definition.json
+
       - name: Fill in the new image ID in the Amazon ECS task definition
         id: task-def
         uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
-          task-definition: ecs/task-definition-template.json
+          task-definition: ecs/task-definition.json
           container-name: fiap-tech-pagamento
           image: ${{ secrets.DOCKER_HUB_USERNAME }}/${{ secrets.DOCKER_IMAGE_NAME }}:latest # TODO
           environment-variables: |
@@ -81,6 +88,9 @@ jobs:
               AWS_REGION=${{ secrets.AWS_REGION }}
               AWS_ACCESS_KEY=${{ secrets.AWS_ACCESS_KEY }}
               AWS_SECRET_KEY=${{ secrets.AWS_SECRET_KEY }}
+              PORT=${{ secrets.PORT }}
+              MONGODB_CONNECTIONSTRING=${{ secrets.MONGODB_CONNECTIONSTRING }}
+              MONGODB_DB_NAME=${{ secrets.MONGODB_DB_NAME }}
               FILA_PEDIDO_PAGO=${{ secrets.FILA_PEDIDO_PAGO }}
               URL_FILA_PEDIDO_PAGO=${{ secrets.URL_FILA_PEDIDO_PAGO }}
               FILA_ENVIO_COBRANCA=${{ secrets.FILA_ENVIO_COBRANCA }}
@@ -107,5 +117,4 @@ jobs:
           SECURITY_GROUPS: ${{ secrets.SECURITY_GROUPS }}
         run: |
           sed -e "s/\${CLUSTER_NAME}/${CLUSTER_NAME}/g" -e "s/\${SERVICE_NAME}/${SERVICE_NAME}/g" -e "s/\${TASK_DEFINITION}/${TASK_DEFINITION}/g" -e "s/\${SUB_NET_1}/${SUB_NET_1}/g" -e "s/\${SUB_NET_2}/${SUB_NET_2}/g" -e "s/\${SUB_NET_3}/${SUB_NET_3}/g" -e "s/\${SECURITY_GROUPS}/${SECURITY_GROUPS}/g" ecs/service-definition_template.json > ecs/service-definition.json
-          cat ecs/service-definition.json
           aws ecs update-service --cluster ${{ secrets.CLUSTER_NAME }} --service ${{ secrets.SERVICE_NAME }} --force-new-deployment --region ${{ secrets.AWS_REGION }} || aws ecs create-service --cli-input-json file://ecs/service-definition.json
