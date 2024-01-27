@@ -8,13 +8,26 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    name: Run test and lint
+    name: Tests
     steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-node@v3
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
       with:
         node-version: 20
         cache: 'yarn'
-    - run: yarn install
-    - run: yarn test --coverage
-    - run: npx eslint . --ext .js,.jsx,.ts,.tsx
+
+    - name: Run test and lint
+      run: |
+        yarn install
+        yarn test --coverage
+        npx eslint src --ext .js,.jsx,.ts,.tsx
+
+    - name: SonarQube Scan
+      uses: sonarsource/sonarqube-scan-action@master
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        SONAR_HOST_URL: 'https://sonarcloud.io'
+        
