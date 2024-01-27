@@ -16,7 +16,7 @@ spec:
         - name: tech-challenge-api-container
           image: eltonarodrigues/fiap-tech-challenge-soat-grupo-30:latest
           ports:
-            - containerPort: 3000
+            - containerPort: 8080
           env:
             - name: DB_HOST
               valueFrom:

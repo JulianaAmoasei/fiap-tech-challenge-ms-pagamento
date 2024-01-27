@@ -78,15 +78,16 @@ jobs:
           image: ${{ secrets.DOCKER_HUB_USERNAME }}/${{ secrets.DOCKER_IMAGE_NAME }}:latest # TODO
           environment-variables: |
               NODE_ENV=${{ secrets.NODE_ENV }}
-              DB_HOST=${{ secrets.DB_HOST }}
-              DB_NAME=${{ secrets.DB_NAME }}
-              DB_PORT=${{ secrets.DB_PORT }}
-              PRODUTO_MS_URL=${{ secrets.PRODUTO_MS_URL }}
-              FILA_PAGAMENTO_URL=${{ secrets.FILA_PAGAMENTO_URL }}
               AWS_REGION=${{ secrets.AWS_REGION }}
               AWS_ACCESS_KEY=${{ secrets.AWS_ACCESS_KEY }}
               AWS_SECRET_KEY=${{ secrets.AWS_SECRET_KEY }}
+              FILA_PEDIDO_PAGO=${{ secrets.FILA_PEDIDO_PAGO }}
+              URL_FILA_PEDIDO_PAGO=${{ secrets.URL_FILA_PEDIDO_PAGO }}
+              FILA_ENVIO_COBRANCA=${{ secrets.FILA_ENVIO_COBRANCA }}
+              URL_FILA_ENVIO_COBRANCA=${{ secrets.URL_FILA_ENVIO_COBRANCA }}
               FILA_ENVIO_PAGAMENTO=${{ secrets.FILA_ENVIO_PAGAMENTO }}
+              URL_FILA_ENVIO_PAGAMENTO=${{ secrets.URL_FILA_ENVIO_PAGAMENTO }}
+              URL_FILA_ENVIO_PAGAMENTO_DLQ=${{ secrets.URL_FILA_ENVIO_PAGAMENTO_DLQ }}
 
       - name: Deploy Amazon ECS task definition
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
