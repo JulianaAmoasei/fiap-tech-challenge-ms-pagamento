@@ -10,7 +10,7 @@ const URL_FILA_ENVIO_PAGAMENTO_DLQ = process.env.URL_FILA_ENVIO_PAGAMENTO_DLQ as
 const queueService = new MessageBrokerService();
 const pagtoProvider = new PagtoProvider();
 
-async function queueCheck() {
+export async function queueCheck() {
   const pagamentos = await queueService.recebeMensagem<MsgPedidoPagamentoBody>(
     URL_FILA_ENVIO_PAGAMENTO
   );
