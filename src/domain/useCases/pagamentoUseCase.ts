@@ -6,7 +6,6 @@ import { MsgPagtoAtualizadoBody, MsgPedidoPagamentoBody, PagamentoDTO, urlQrcode
 export default class PagamentoUseCase {
   static async enviaCobranca(queueRepository: QueueRepository, pagtoProvider: PagtoProviderInterface, pagamento: MsgPedidoPagamentoBody) {
     const dadosCobranca = await pagtoProvider.geraCobranca(pagamento);
-    // criar mensagem com dadosCobranca
     queueRepository.enviaParaFila<urlQrcodeQueueBody>(dadosCobranca, process.env.URL_FILA_ENVIO_COBRANCA as string);
   }
 
