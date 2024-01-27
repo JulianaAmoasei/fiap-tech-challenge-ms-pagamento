@@ -2,10 +2,7 @@ version: '3.4'
 
 services:
   dev:
-    build: 
-      context: .
-      dockerfile: Dockerfile
-      target: development
+    build: .
     container_name: dev-fiap-soat-ms-pagamento
     volumes:
       - .:/app
@@ -23,10 +20,7 @@ services:
     networks:
       - fiap-project-network
   test:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: test
+    build: .
     container_name: test_dev-fiap-soat-ms-pagamento
     command: yarn run test
     working_dir: /app
