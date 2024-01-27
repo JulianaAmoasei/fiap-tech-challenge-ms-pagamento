@@ -28,7 +28,6 @@ export default class MessageBrokerService implements QueueRepository {
     if (process.env.NODE_ENV === "development" || process.env.NODE_ENV === "test") {
       configuration.endpoint = 'http://localhost:4566'
     }
-    console.log(configuration)
     this.sqsClient = new SQSClient(configuration);
   }
 
