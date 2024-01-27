@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from "uuid";
 
 import PagamentoController from "../../../../src/adapters/interfaceAdapters/controllers/pagamentoController";
 import routes from "../../../../src/adapters/interfaceAdapters/routes";
-import { statusPagamento } from "../../../../src/domain/entities/types/pagamentoType";
+import { PagamentoDTO, statusPagamento } from "../../../../src/domain/entities/types/pagamentoType";
 
 const app = express();
 app.use(express.json());
@@ -15,7 +15,7 @@ afterAll(() => {
   server.close()
 })
 
-const pagamentoMock = {
+const pagamentoMock: PagamentoDTO = {
   _id: uuidv4(),
   pedidoId: uuidv4(),
   valor: 10,
@@ -35,7 +35,7 @@ describe("GET em /pagamentos/:id", () => {
       .mockResolvedValue(pagamentoMock);
 
     await supertest(server)
-      .get(`/pagamentos/${idMock}`)
+      .get(`/api/pagamentos/${idMock}`)
       .expect(200)
       .then((response) => {
         expect(response.body.pagamento.valor).toBe(pagamentoMock.valor);
@@ -50,7 +50,7 @@ describe("GET em /pagamentos/:id", () => {
       .fn()
       .mockResolvedValue(null);
 
-    await supertest(server).get("/pagamentos/1").expect(404);
+    await supertest(server).get("/api/pagamentos/1").expect(404);
   });
 });
 
@@ -61,8 +61,24 @@ describe("GET em /pagamentos/processamento/:id", () => {
       .mockResolvedValue(pagamentoMock);
 
     await supertest(server)
-      .get(`/pagamentos/processamento/${idMock}`)
-      .expect(204);
+      .get(`/api/pagamentos/processamento/${idMock}`)
+      .expect(200);
+  });
+
+  it("Deve retornar na resposta quando o pagamento ja foi processado", async () => {
+    pagamentoMock.statusPagamento = statusPagamento.PAGAMENTO_CONCLUIDO
+    PagamentoController.atualizaStatusPagamento = jest.fn().mockImplementation(() => {
+      throw new Error('pagamento_ja_processado')
+    });
+
+    await supertest(server)
+      .get(`/api/pagamentos/processamento/${idMock}`)
+      .expect(200)
+      .then((response) => {
+        expect(response?.body?.mensagem).toBe(
+          "Processamento já foi realizado"
+        );
+      });
   });
 
   it("Deve retornar erro", async () => {
@@ -72,6 +88,6 @@ describe("GET em /pagamentos/processamento/:id", () => {
         throw new Error("Erro ao processar pagamento");
       });
 
-    await supertest(server).get("/pagamentos/processamento/1").expect(500);
+    await supertest(server).get("/api/pagamentos/processamento/1").expect(500);
   });
 });

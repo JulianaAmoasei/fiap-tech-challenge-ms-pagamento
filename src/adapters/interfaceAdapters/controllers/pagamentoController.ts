@@ -25,11 +25,14 @@ export default class PagamentoController {
       pedidoId
     );
 
+    if (dadosPagto.statusPagamento !== statusPagamento.AGUARDANDO_PAGAMENTO) {
+      throw Error('pagamento_ja_processado');
+    }
+
     //parse necessário para acessar o _doc do mongo
     const stringObj = JSON.stringify(dadosPagto);
-
     const pagtoAtualizado = await PagamentoRepository.atualizaPagamento(
-      dadosPagto._id?.toString() as string,
+      dadosPagto._id as string,
       {
         ...JSON.parse(stringObj),
         statusPagamento: statusPagamento.PAGAMENTO_CONCLUIDO,

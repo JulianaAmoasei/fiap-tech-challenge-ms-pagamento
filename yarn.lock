@@ -1014,7 +1014,7 @@
   dependencies:
     regexp-match-indices "1.0.2"
 
-"@cucumber/cucumber@*", "@cucumber/cucumber@^10.2.1":
+"@cucumber/cucumber@*", "@cucumber/cucumber@^10.3.1":
   version "10.3.1"
   resolved "https://registry.npmjs.org/@cucumber/cucumber/-/cucumber-10.3.1.tgz"
   integrity sha512-0H0NkOXcYTCG1qCh3o0p1HPSMODGJmlHi1rm5yfoiMx5tJbBjxVNI2VVD2xtPWA+D6ehHQD9asewuzjMXrbPIw==
