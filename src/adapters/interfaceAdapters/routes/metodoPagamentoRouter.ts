@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import express, { NextFunction } from "express";
+import express, { NextFunction, RequestHandler } from "express";
 import { Request, Response } from "express";
 
 import MetodoPagamentoController from "../controllers/metodoPagamentoController";
@@ -26,7 +26,7 @@ const metodoPagamentoRouter = express.Router();
  */
 metodoPagamentoRouter.get(
   "/api/metodo-pagamento",
-  async (req: Request, res: Response, next: NextFunction): Promise<void | object> => {
+  (async (req: Request, res: Response, next: NextFunction): Promise<void | object> => {
     try {
       const message = await MetodoPagamentoController.listaMetodosPagamento();
       if (!message) {
@@ -40,12 +40,12 @@ metodoPagamentoRouter.get(
       console.error(`Erro ao consultar lista de pagamentos: ${err}`);
       return next(err);
     }
-  }
+  }) as RequestHandler
 );
 
 metodoPagamentoRouter.get(
   "/api/metodo-pagamento/default",
-  async (req: Request, res: Response, next: NextFunction): Promise<void | object> => {
+  (async (req: Request, res: Response, next: NextFunction): Promise<void | object> => {
     try {
       const message = await MetodoPagamentoController.retornaMetodoPagamentoPadraoId();
       if (!message) {
@@ -59,7 +59,7 @@ metodoPagamentoRouter.get(
       console.error(`Erro ao consultar método de pagamento padrão: ${err}`);
       return next(err);
     }
-  }
+  }) as RequestHandler
 );
 
 export default metodoPagamentoRouter;
