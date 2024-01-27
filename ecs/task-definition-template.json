@@ -1,5 +1,5 @@
 {
-  "executionRoleArn": "${EXECUTION_ROLE_ARN}",
+  "executionRoleArn": "arn:aws:iam::948923481747:role/ecs-task-role",
   "family": "fiap-tech-pagamento-family",
   "containerDefinitions": [
       {
