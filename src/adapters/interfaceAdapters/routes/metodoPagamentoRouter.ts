@@ -10,7 +10,7 @@ const metodoPagamentoRouter = express.Router();
 
 /**
  * @openapi
- * /metodospagamento:
+ * /metodo-pagamento:
  *   get:
  *     summary: Consulta métodos de pagamento disponíveis
  *     tags:

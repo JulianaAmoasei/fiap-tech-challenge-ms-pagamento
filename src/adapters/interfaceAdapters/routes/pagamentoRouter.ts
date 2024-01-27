@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import MessageBrokerService from "dataSources/messageBroker/messageBrokerService";
-import express, { NextFunction, Request, RequestHandler,Response } from "express";
+import express, { NextFunction, Request, RequestHandler, Response } from "express";
 
 import PagamentoController from "../controllers/pagamentoController";
 
@@ -10,20 +10,18 @@ const pagamentoRouter = express.Router();
 
 /**
  * @openapi
- * /pagamento:
+ * /pagamentos/{pedidoId}:
  *   get:
- *     summary: Consulta pagamento pelo id
+ *     summary: Consulta pagamento do pedido
+ *     parameters:
+ *       - in: path
+ *         name: pedidoId
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Id do pedido
  *     tags:
  *       - Pagamento
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               pedidoId:
- *                 type: string
  *     responses:
  *       200:
  *         description: Objeto Pagamento.
@@ -31,20 +29,20 @@ const pagamentoRouter = express.Router();
  *         description: Erro na api.
  */
 pagamentoRouter.get(
-  "/pagamentos/:id",
+  "/api/pagamentos/:pedidoId",
   (async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { id } = req.params;
-      const pagamento = await PagamentoController.listaPagamento(id);
+      const { pedidoId } = req.params;
+      const pagamento = await PagamentoController.listaPagamento(pedidoId);
       if (!pagamento) {
         console.error("Pagamento não encontrado!");
-        
+
         return res.status(404).json({
           status: "error",
           pagamento,
         });
       }
-      
+
       return res.status(200).json({
         status: "success",
         pagamento,
@@ -58,17 +56,18 @@ pagamentoRouter.get(
 
 /**
  * @openapi
- * /pagamento:
+ * /pagamentos/processamento/{pedidoId}:
  *   get:
  *     summary: Recebe confirmação de pagamento via provider
+ *     parameters:
+ *       - in: path
+ *         name: pedidoId
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Id do pedido
  *     tags:
  *       - Pagamento
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: string
  *     responses:
  *       204:
  *         description: Mock pagamento efetuado com sucesso.
@@ -76,14 +75,17 @@ pagamentoRouter.get(
  *         description: Erro na api.
  */
 pagamentoRouter.get(
-  "/pagamentos/processamento/:id",
+  "/api/pagamentos/processamento/:pedidoId",
   (async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { id } = req.params;
-      await PagamentoController.atualizaStatusPagamento(queueService, id);
-      
-      return res.status(204).send();
-    } catch (err: unknown) {
+      const { pedidoId } = req.params;
+      await PagamentoController.atualizaStatusPagamento(queueService, pedidoId);
+
+      return res.status(200).json({ 'mensagem': 'Processamento realizado' });
+    } catch (err: any) {
+      if (err.message === 'pagamento_ja_processado') {
+        return res.status(200).json({ 'mensagem': 'Processamento já foi realizado' })
+      }
       console.error(`Erro ao processar pagamento: ${err}`);
       return next(err);
     }
