@@ -48,11 +48,9 @@ describe("GET em /pagamentos/:id", () => {
   it("Deve retornar erro", async () => {
     PagamentoController.listaPagamento = jest
       .fn()
-      .mockImplementationOnce(() => {
-        throw new Error("Pagamento não encontrado!");
-      });
+      .mockResolvedValue(null);
 
-    await supertest(server).get("/pagamentos/1").expect(500);
+    await supertest(server).get("/pagamentos/1").expect(404);
   });
 });
 
@@ -71,7 +69,7 @@ describe("GET em /pagamentos/processamento/:id", () => {
     PagamentoController.atualizaStatusPagamento = jest
       .fn()
       .mockImplementationOnce(() => {
-        throw new Error("Pagamento não encontrado!");
+        throw new Error("Erro ao processar pagamento");
       });
 
     await supertest(server).get("/pagamentos/processamento/1").expect(500);

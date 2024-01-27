@@ -1,12 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import MessageBrokerService from "dataSources/messageBroker/messageBrokerService";
-import express, { NextFunction, RequestHandler } from "express";
-import { Request, Response } from "express";
+import express, { NextFunction, Request, RequestHandler,Response } from "express";
 
 import PagamentoController from "../controllers/pagamentoController";
-
-// import authenticate from "../middleware/auth";
-// import { validaRequisicao } from "./utils";
 
 const queueService = new MessageBrokerService();
 
@@ -41,8 +37,14 @@ pagamentoRouter.get(
       const { id } = req.params;
       const pagamento = await PagamentoController.listaPagamento(id);
       if (!pagamento) {
-        throw new Error("Pagamento não encontrado!");
+        console.error("Pagamento não encontrado!");
+        
+        return res.status(404).json({
+          status: "error",
+          pagamento,
+        });
       }
+      
       return res.status(200).json({
         status: "success",
         pagamento,
@@ -78,13 +80,11 @@ pagamentoRouter.get(
   (async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { id } = req.params;
-      const response = await PagamentoController.atualizaStatusPagamento(queueService, id);
-      if (!response) {
-        throw new Error("Pagamento não encontrado");
-      }
+      await PagamentoController.atualizaStatusPagamento(queueService, id);
+      
       return res.status(204).send();
     } catch (err: unknown) {
-      console.error(`Erro ao consultar pagamento: ${err}`);
+      console.error(`Erro ao processar pagamento: ${err}`);
       return next(err);
     }
   }) as RequestHandler
