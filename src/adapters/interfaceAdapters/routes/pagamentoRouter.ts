@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import MessageBrokerService from "dataSources/messageBroker/messageBrokerService";
-import express, { NextFunction } from "express";
+import express, { NextFunction, RequestHandler } from "express";
 import { Request, Response } from "express";
 
 import PagamentoController from "../controllers/pagamentoController";
@@ -36,7 +36,7 @@ const pagamentoRouter = express.Router();
  */
 pagamentoRouter.get(
   "/pagamentos/:id",
-  async (req: Request, res: Response, next: NextFunction) => {
+  (async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { id } = req.params;
       const pagamento = await PagamentoController.listaPagamento(id);
@@ -51,7 +51,7 @@ pagamentoRouter.get(
       console.error(`Erro ao consultar pagamento: ${err}`);
       return next(err);
     }
-  }
+  }) as RequestHandler
 );
 
 /**
@@ -75,7 +75,7 @@ pagamentoRouter.get(
  */
 pagamentoRouter.get(
   "/pagamentos/processamento/:id",
-  async (req: Request, res: Response, next: NextFunction) => {
+  (async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { id } = req.params;
       const response = await PagamentoController.atualizaStatusPagamento(queueService, id);
@@ -87,7 +87,7 @@ pagamentoRouter.get(
       console.error(`Erro ao consultar pagamento: ${err}`);
       return next(err);
     }
-  }
+  }) as RequestHandler
 );
 
 export default pagamentoRouter;
