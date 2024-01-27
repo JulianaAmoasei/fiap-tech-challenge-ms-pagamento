@@ -26,8 +26,6 @@ const metodoPagamentoRouter = express.Router();
  */
 metodoPagamentoRouter.get(
   "/api/metodo-pagamento",
-  // authenticate(TipoUsuario.ADMIN),
-  // validaRequisicao(RecebimentoDePagamentosSchema),
   async (req: Request, res: Response, next: NextFunction): Promise<void | object> => {
     try {
       const message = await MetodoPagamentoController.listaMetodosPagamento();
@@ -47,8 +45,6 @@ metodoPagamentoRouter.get(
 
 metodoPagamentoRouter.get(
   "/api/metodo-pagamento/default",
-  // authenticate(TipoUsuario.ADMIN),
-  // validaRequisicao(RecebimentoDePagamentosSchema),
   async (req: Request, res: Response, next: NextFunction): Promise<void | object> => {
     try {
       const message = await MetodoPagamentoController.retornaMetodoPagamentoPadraoId();

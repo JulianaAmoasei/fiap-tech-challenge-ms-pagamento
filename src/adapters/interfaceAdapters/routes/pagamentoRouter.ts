@@ -36,8 +36,6 @@ const pagamentoRouter = express.Router();
  */
 pagamentoRouter.get(
   "/pagamentos/:id",
-  // authenticate(TipoUsuario.ADMIN),
-  // validaRequisicao(RecebimentoDePagamentosSchema),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { id } = req.params;
@@ -77,8 +75,6 @@ pagamentoRouter.get(
  */
 pagamentoRouter.get(
   "/pagamentos/processamento/:id",
-  // authenticate(TipoUsuario.ADMIN),
-  // validaRequisicao(RecebimentoDePagamentosSchema),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { id } = req.params;
