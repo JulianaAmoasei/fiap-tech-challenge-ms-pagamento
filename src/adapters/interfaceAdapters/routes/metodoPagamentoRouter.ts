@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import express, { NextFunction } from "express";
 import { Request, Response } from "express";
 
@@ -27,7 +28,7 @@ metodoPagamentoRouter.get(
   "/api/metodo-pagamento",
   // authenticate(TipoUsuario.ADMIN),
   // validaRequisicao(RecebimentoDePagamentosSchema),
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: Request, res: Response, next: NextFunction): Promise<any> => {
     try {
       const message = await MetodoPagamentoController.listaMetodosPagamento();
 
@@ -51,7 +52,7 @@ metodoPagamentoRouter.get(
   "/api/metodo-pagamento/default",
   // authenticate(TipoUsuario.ADMIN),
   // validaRequisicao(RecebimentoDePagamentosSchema),
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: Request, res: Response, next: NextFunction): Promise<any> => {
     try {
       const message = await MetodoPagamentoController.retornaMetodoPagamentoPadraoId();
       

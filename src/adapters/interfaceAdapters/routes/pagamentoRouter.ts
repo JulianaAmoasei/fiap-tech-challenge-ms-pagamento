@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import MessageBrokerService from "dataSources/messageBroker/messageBrokerService";
 import express, { NextFunction } from "express";
 import { Request, Response } from "express";
@@ -37,7 +38,7 @@ pagamentoRouter.get(
   "/pagamentos/:id",
   // authenticate(TipoUsuario.ADMIN),
   // validaRequisicao(RecebimentoDePagamentosSchema),
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: Request, res: Response, next: NextFunction): Promise<any> => {
     try {
       const { id } = req.params;
       const pagamento = await PagamentoController.listaPagamento(id);
@@ -81,7 +82,7 @@ pagamentoRouter.get(
   "/pagamentos/processamento/:id",
   // authenticate(TipoUsuario.ADMIN),
   // validaRequisicao(RecebimentoDePagamentosSchema),
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: Request, res: Response, next: NextFunction): Promise<any> => {
     try {
       const { id } = req.params;
       const response = await PagamentoController.atualizaStatusPagamento(queueService, id);
