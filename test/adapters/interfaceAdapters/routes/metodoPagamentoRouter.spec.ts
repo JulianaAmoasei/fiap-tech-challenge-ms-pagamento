@@ -49,6 +49,16 @@ describe("GET em /api/metodo-pagamento", () => {
         expect(response.body.message[0].nome).toBe("QR Code");
       });
   });
+  it("Deve receber 404 quando método de pagamento não encontrado", async () => {
+    MetodoPagamentoController.listaMetodosPagamento = jest
+      .fn()
+      .mockResolvedValue([]);
+
+    await supertest(server)
+      .get("/api/metodo-pagamento")
+      .expect(404)
+      ;
+  });
 });
 
 describe("GET em /api/metodo-pagamento/default", () => {
@@ -63,5 +73,15 @@ describe("GET em /api/metodo-pagamento/default", () => {
       .then((response) => {
         expect(response.body.message.nome).toBe("QR Code");
       });
+  });
+  it("Deve receber 404 quando método de pagamento padrão não encontrado", async () => {
+    MetodoPagamentoController.retornaMetodoPagamentoPadraoId = jest
+      .fn()
+      .mockResolvedValue(null);
+
+    await supertest(server)
+      .get("/api/metodo-pagamento/default")
+      .expect(404)
+      ;
   });
 });

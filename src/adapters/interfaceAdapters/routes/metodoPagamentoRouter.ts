@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import express, { NextFunction, RequestHandler } from "express";
-import { Request, Response } from "express";
+import express, { NextFunction, Request, RequestHandler,Response } from "express";
 
 import MetodoPagamentoController from "../controllers/metodoPagamentoController";
 
@@ -28,10 +27,11 @@ metodoPagamentoRouter.get(
   "/api/metodo-pagamento",
   (async (req: Request, res: Response, next: NextFunction): Promise<void | object> => {
     try {
-      const message = await MetodoPagamentoController.listaMetodosPagamento();
-      if (!message) {
-        throw new Error("Lista de métodos de pagamento não encontrada!");
-      } 
+      const message = await MetodoPagamentoController.listaMetodosPagamento(); 
+      if (message?.length == 0) {
+        console.log("Métodos de pagamento não encontrados!");
+        return res.status(404).json({status: "error", message})
+      }
       return res.status(200).json({
         status: "success",
         message,
@@ -49,7 +49,8 @@ metodoPagamentoRouter.get(
     try {
       const message = await MetodoPagamentoController.retornaMetodoPagamentoPadraoId();
       if (!message) {
-        throw new Error("ID método padrão não encontrado!");
+        console.error("ID método padrão não encontrado!");
+        return res.status(404).json({status: "error", message})
       }
       return res.status(200).json({
         status: "success",
