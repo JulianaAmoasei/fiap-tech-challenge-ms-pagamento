@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 // eslint-disable-next-line unused-imports/no-unused-imports
 import { Given, Then, When } from '@cucumber/cucumber'
@@ -57,7 +58,7 @@ Given('recebe um pagamento na fila e crio no banco',{timeout: 3 * 5000},  async 
 
 
 When('eu invoco a api de de pagamento', async function () {
-  response = await fetch(`${url_endpoint}/pagamentos/${pedidoId}`);
+  response = await fetch(`${url_endpoint}/api/pagamento/${pedidoId}`);
 });
 
 Then('deve retornar os dados do pagamento criado', async function () {
@@ -77,7 +78,7 @@ Given('existe um pagamento criado', function () {
 });
 
 When('eu invoco a api para mudar o status do pagamento', async function () {
-  response = await fetch(`${url_endpoint}/pagamentos/processamento/${pedidoId}`);
+  response = await fetch(`${url_endpoint}/api/pagamento/processamento/${pedidoId}`);
 });
 
 Then('deve retornar a confirmacao da mudanca', async function () {
@@ -96,7 +97,7 @@ Given('existe um pagamento que já foi processado', function () {
 });
 
 When('eu invoco a api para mudar o status do pagamento já processado', async function () {
-  response = await fetch(`${url_endpoint}/pagamentos/processamento/${pedidoId}`);
+  response = await fetch(`${url_endpoint}/api/pagamento/processamento/${pedidoId}`);
 });
 
 Then('deve retornar a mensagem que já foi processado', async function () {
