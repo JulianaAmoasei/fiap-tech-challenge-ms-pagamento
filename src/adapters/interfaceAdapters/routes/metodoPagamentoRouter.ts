@@ -10,7 +10,7 @@ const metodoPagamentoRouter = express.Router();
 
 /**
  * @openapi
- * /metodo-pagamento:
+ * /api/pagamento/metodo:
  *   get:
  *     summary: Consulta métodos de pagamento disponíveis
  *     tags:
@@ -24,7 +24,7 @@ const metodoPagamentoRouter = express.Router();
  *         description: Erro na api.
  */
 metodoPagamentoRouter.get(
-  "/api/metodo-pagamento",
+  "/api/pagamento/metodo",
   (async (req: Request, res: Response, next: NextFunction): Promise<void | object> => {
     try {
       const message = await MetodoPagamentoController.listaMetodosPagamento(); 
@@ -43,8 +43,23 @@ metodoPagamentoRouter.get(
   }) as RequestHandler
 );
 
+/**
+ * @openapi
+ * /api/pagamento/metodo/default:
+ *   get:
+ *     summary: Retorna o método de pagamento padrão (QR Code)
+ *     tags:
+ *       - MetodoPagamento
+ *     requestBody:
+ *       required: false
+ *     responses:
+ *       200:
+ *         description: obj MetodoPagamento.
+ *       500:
+ *         description: Erro na api.
+ */
 metodoPagamentoRouter.get(
-  "/api/metodo-pagamento/default",
+  "/api/pagamento/metodo/default",
   (async (req: Request, res: Response, next: NextFunction): Promise<void | object> => {
     try {
       const message = await MetodoPagamentoController.retornaMetodoPagamentoPadraoId();

@@ -10,7 +10,7 @@ const pagamentoRouter = express.Router();
 
 /**
  * @openapi
- * /pagamentos/{pedidoId}:
+ * /api/pagamento/{pedidoId}:
  *   get:
  *     summary: Consulta pagamento do pedido
  *     parameters:
@@ -29,7 +29,7 @@ const pagamentoRouter = express.Router();
  *         description: Erro na api.
  */
 pagamentoRouter.get(
-  "/api/pagamentos/:pedidoId",
+  "/api/pagamento/:pedidoId",
   (async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { pedidoId } = req.params;
@@ -56,7 +56,7 @@ pagamentoRouter.get(
 
 /**
  * @openapi
- * /pagamentos/processamento/{pedidoId}:
+ * /api/pagamento/processamento/{pedidoId}:
  *   get:
  *     summary: Recebe confirmação de pagamento via provider
  *     parameters:
@@ -75,7 +75,7 @@ pagamentoRouter.get(
  *         description: Erro na api.
  */
 pagamentoRouter.get(
-  "/api/pagamentos/processamento/:pedidoId",
+  "/api/pagamento/processamento/:pedidoId",
   (async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { pedidoId } = req.params;
