@@ -5,8 +5,8 @@ import assert from 'assert';
 import dotenv from 'dotenv';
 import { v4 as uuidv4 } from "uuid";
 
-import { MsgPedidoPagamentoBody } from '../../src/domain/entities/types/pagamentoType';
 import MessageBrokerService from '../../src/dataSources/messageBroker/messageBrokerService';
+import { MsgPedidoPagamentoBody } from '../../src/domain/entities/types/pagamentoType';
 
 dotenv.config();
 const url_endpoint = "http://localhost:8000/api"
@@ -29,7 +29,7 @@ Given('que o sistema de pagamento está ok', function () {
 
 
 When('eu invoco a api de metodos de pagamento', async function () {
-  response = await fetch(`${url_endpoint}/metodo-pagamento`);
+  response = await fetch(`${url_endpoint}api/pagamento/metodo`);
 });
 
 Then('deve retornar um a lista dos metodos disponiveis no sistema', async function () {
