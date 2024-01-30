@@ -59,13 +59,16 @@ Para derrubar o serviço, execute o comando docker compose down.
 
 Esta API fornece documentação no padrão OpenAPI. Os endpoints disponíveis, suas descrições e dados necessários para requisição podem ser consultados e testados em /api-docs.
 
-`GET /api/metodo-pagamento`
+`GET /api/pagamento/metodo`
 Consulta os métodos de pagamento disponibilizados para uso da aplicação
 
-`GET /api/pagamentos/:pedidoId`
+`GET /api/pagamento/metodo/default`
+Retorna o método de pagamento padrão (QR Code)
+
+`GET /api/pagamento/:pedidoId`
 Consulta status de um pagamento via ID do pedido correspondente
 
-`GET /api/pagamentos/processamento/:pedidoId`
+`GET /api/pagamento/processamento/:pedidoId`
 Endpoint utilizado internamente pelo serviço para atualização de status de pagamento
 
 ### Mensageria

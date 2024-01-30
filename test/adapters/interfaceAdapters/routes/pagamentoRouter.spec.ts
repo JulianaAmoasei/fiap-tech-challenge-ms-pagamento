@@ -28,14 +28,14 @@ const pagamentoMock: PagamentoDTO = {
 
 const idMock = "123";
 
-describe("GET em /pagamentos/:id", () => {
+describe("GET em /api/pagamento/:id", () => {
   it("Deve buscar um pagamento pelo id", async () => {
     PagamentoController.listaPagamento = jest
       .fn()
       .mockResolvedValue(pagamentoMock);
 
     await supertest(server)
-      .get(`/api/pagamentos/${idMock}`)
+      .get(`/api/pagamento/${idMock}`)
       .expect(200)
       .then((response) => {
         expect(response.body.pagamento.valor).toBe(pagamentoMock.valor);
@@ -50,18 +50,18 @@ describe("GET em /pagamentos/:id", () => {
       .fn()
       .mockResolvedValue(null);
 
-    await supertest(server).get("/api/pagamentos/1").expect(404);
+    await supertest(server).get("/api/pagamento/1").expect(404);
   });
 });
 
-describe("GET em /pagamentos/processamento/:id", () => {
+describe("GET em /api/pagamento/processamento/:id", () => {
   it("Deve atualizar um pagamento pelo id", async () => {
     PagamentoController.atualizaStatusPagamento = jest
       .fn()
       .mockResolvedValue(pagamentoMock);
 
     await supertest(server)
-      .get(`/api/pagamentos/processamento/${idMock}`)
+      .get(`/api/pagamento/processamento/${idMock}`)
       .expect(200);
   });
 
@@ -72,7 +72,7 @@ describe("GET em /pagamentos/processamento/:id", () => {
     });
 
     await supertest(server)
-      .get(`/api/pagamentos/processamento/${idMock}`)
+      .get(`/api/pagamento/processamento/${idMock}`)
       .expect(200)
       .then((response) => {
         expect(response?.body?.mensagem).toBe(
@@ -88,6 +88,6 @@ describe("GET em /pagamentos/processamento/:id", () => {
         throw new Error("Erro ao processar pagamento");
       });
 
-    await supertest(server).get("/api/pagamentos/processamento/1").expect(500);
+    await supertest(server).get("/api/pagamento/processamento/1").expect(500);
   });
 });

@@ -7,7 +7,7 @@ import specs from "./swaggerConfig";
 
 const routes = (app: Express) => {
   app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
-  app.use(express.json(), pagamentoRouter, metodoPagamentoRouter);
+  app.use(express.json(), metodoPagamentoRouter, pagamentoRouter);
 };
 
 export default routes;
