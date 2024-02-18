@@ -48,5 +48,11 @@ export const statusPagamento = {
   PAGAMENTO_CONCLUIDO: "Pagamento concluído",
 } as const;
 
+export enum PagamentoErrorCodes {
+  FALHA_CONEXAO_PROVIDER = "falha na conexão com provedor de pagamento. pedido cancelado.",
+  FALHA_PAGAMENTO = "falha no pagamento. pedido cancelado. contate sua instituição bancária.",
+  FALHA_PRODUCAO = "seu pedido não pôde ser produzido. pedido cancelado. o pagamento será estornado.",
+}
+
 export type StatusPagamento =
   (typeof statusPagamento)[keyof typeof statusPagamento];
