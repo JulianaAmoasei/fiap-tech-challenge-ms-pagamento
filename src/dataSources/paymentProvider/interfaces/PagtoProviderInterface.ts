@@ -4,5 +4,5 @@ import {
 } from "~domain/entities/types/pagamentoType";
 
 export default interface PagtoProviderInterface {
-  geraCobranca(pagamento: MsgPedidoPagamentoBody): Promise<urlQrcodeQueueBody>;
+  geraCobranca(pagamento: MsgPedidoPagamentoBody): Promise<urlQrcodeQueueBody | Error>;
 }
