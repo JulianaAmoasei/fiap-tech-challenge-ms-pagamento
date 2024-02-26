@@ -1,7 +1,11 @@
 import PagamentoRepository from "../../../src/adapters/repositories/database/pagamentoRepository";
 import QueueRepository from "../../../src/adapters/repositories/messageBroker/messageBrokerRepository";
 import PagtoProviderInterface from "../../../src/dataSources/paymentProvider/interfaces/PagtoProviderInterface";
-import { MsgPedidoPagamentoBody,PagamentoDTO, statusPagamento } from "../../../src/domain/entities/types/pagamentoType";
+import {
+  MsgPedidoPagamentoBody,
+  PagamentoDTO,
+  statusPagamento,
+} from "../../../src/domain/entities/types/pagamentoType";
 import PagamentoUseCase from "../../../src/domain/useCases/pagamentoUseCase";
 
 describe("PagamentoUseCases", () => {
@@ -14,12 +18,10 @@ describe("PagamentoUseCases", () => {
     };
 
     const pagtoProviderMock: PagtoProviderInterface = {
-      geraCobranca: jest
-        .fn()
-        .mockResolvedValue({
-          pedidoId: "123",
-          qrUrl: "http://apipagamento.com",
-        }),
+      geraCobranca: jest.fn().mockResolvedValue({
+        pedidoId: "123",
+        qrUrl: "http://apipagamento.com",
+      }),
     };
 
     const pagamento: MsgPedidoPagamentoBody = {
@@ -39,6 +41,67 @@ describe("PagamentoUseCases", () => {
       { pedidoId: "123", qrUrl: "http://apipagamento.com" },
       process.env.URL_FILA_ENVIO_COBRANCA
     );
+  });
+  it("deve cancelar a cobrança em caso de erro no gateway de pagamento", async () => {
+
+    const queueRepositoryMock: QueueRepository = {
+      enviaParaFila: jest.fn(),
+      recebeMensagem: jest.fn(),
+      deletaMensagemProcessada: jest.fn(),
+      enviaParaDLQ: jest.fn(),
+    };
+    const pagtoProviderMock: PagtoProviderInterface = {
+      geraCobranca: jest
+      .fn()
+      .mockImplementationOnce(() => {
+        throw new Error("Erro do gateway");
+      }),
+    };
+
+    const pagamento: MsgPedidoPagamentoBody = {
+      pedidoId: "123",
+      metodoDePagamento: "QR Code",
+      valor: 10,
+    };
+    
+    PagamentoRepository.listaPagamento = jest
+    .fn()
+    .mockResolvedValue(() => ({
+      _id: '123',
+      pedidoId: '123',
+      valor: 10,
+      statusPagamento: statusPagamento.AGUARDANDO_PAGAMENTO,
+      metodoDePagamento: 'QR Code',
+      createdAt: new Date(),
+      deletedAt: null,
+      updatedAt: null,
+    }));
+
+    PagamentoRepository.atualizaPagamento = jest
+    .fn()
+    .mockResolvedValue(() => ({
+      _id: '123',
+      pedidoId: '123',
+      valor: 10,
+      statusPagamento: statusPagamento.FALHA,
+      metodoDePagamento: 'QR Code',
+      createdAt: new Date(),
+      deletedAt: null,
+      updatedAt: null,
+    }));
+
+    await PagamentoUseCase.enviaCobranca(
+      queueRepositoryMock,
+      pagtoProviderMock,
+      pagamento
+    );
+
+    expect(pagtoProviderMock.geraCobranca).toHaveBeenCalledWith(pagamento);
+    expect(queueRepositoryMock.enviaParaFila).not.toHaveBeenCalled();
+    // expect(PagamentoUseCase.cancelaCobranca).toHaveBeenCalledWith(
+    //   pagamento,
+    //   queueRepositoryMock
+    // );
   });
 
   it("enviaDadosAtualizados deve chamar enviaParaFila corretamente", async () => {

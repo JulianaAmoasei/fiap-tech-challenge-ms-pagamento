@@ -19,6 +19,9 @@ export default class PagamentoUseCase {
   ): Promise<void> {
     try {
       const dadosCobranca = await pagtoProvider.geraCobranca(pagamento);
+      if (dadosCobranca instanceof Error) {
+        throw dadosCobranca;
+      }  
       queueRepository.enviaParaFila<urlQrcodeQueueBody | Error>(
         dadosCobranca,
         process.env.URL_FILA_ENVIO_COBRANCA as string
@@ -26,6 +29,7 @@ export default class PagamentoUseCase {
     } catch (error) {
       if (error instanceof PagamentoError) {
         await this.cancelaCobranca(pagamento, queueRepository);
+        throw error;
       }
     }
   }
