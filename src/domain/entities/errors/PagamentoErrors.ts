@@ -1,7 +1,3 @@
-class PagamentoError extends Error {
-  constructor(message: string) {
-    super(message);
-  }
-}
+class PagamentoError extends Error {}
 
 export default PagamentoError;
