@@ -40,7 +40,7 @@ export default class PagamentoController {
     if (
       dadosPagto.statusPagamento !== StatusPagamentoServico.AGUARDANDO_PAGAMENTO
     ) {
-      throw Error("pagamento_ja_processado");
+      throw Error("o pagamento já foi processado");
     }
 
     const stringObj = JSON.stringify(dadosPagto);
