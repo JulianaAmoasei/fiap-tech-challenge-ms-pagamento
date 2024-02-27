@@ -4,7 +4,7 @@ import PagamentoModel from "../../../dataSources/database/models/pagamentoModel"
 import {
   MsgPedidoPagamentoBody,
   PagamentoDTO,
-  statusPagamento,
+  StatusPagamentoServico,
 } from "../../../domain/entities/types/pagamentoType";
 
 export const pagamentoModel = PagamentoModel.init();
@@ -14,7 +14,7 @@ export default class PagamentoRepository {
     const dataObj: PagamentoDTO = {
       _id: String(new ObjectId()),
       ...pagamento,
-      statusPagamento: statusPagamento.AGUARDANDO_PAGAMENTO,
+      statusPagamento: StatusPagamentoServico.AGUARDANDO_PAGAMENTO,
       createdAt: new Date(),
       updatedAt: null,
       deletedAt: null

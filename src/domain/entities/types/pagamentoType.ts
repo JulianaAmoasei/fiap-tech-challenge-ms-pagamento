@@ -42,17 +42,34 @@ export interface MsgPagtoAtualizadoBody {
   statusPagamento: string;
 }
 
-export const statusPagamento = {
-  AGUARDANDO_PAGAMENTO: "Aguardando pagamento",
-  FALHA: "Falha no processo de pagamento",
-  PAGAMENTO_CONCLUIDO: "Pagamento concluído",
-} as const;
+export interface RecebimentoDePagamentoGatewayBody {
+  pedidoId: string;
+  statusPagamento: string;
+}
+
+export enum ProcessPagamentoReturnBody {
+  SUCESSO = "Pagamento realizado",
+  FALHA = "Processamento não realizado",
+  ERRO_JA_PROCESSADO = "Processamento já foi realizado"
+}
+
+export enum StatusPagamentoServico {
+  AGUARDANDO_PAGAMENTO = "Aguardando pagamento",
+  FALHA = "Falha no processo de pagamento",
+  PAGAMENTO_CONCLUIDO = "Pagamento concluído",
+}
 
 export enum PagamentoErrorCodes {
   FALHA_CONEXAO_PROVIDER = "falha na conexão com provedor de pagamento. pedido cancelado.",
   FALHA_PAGAMENTO = "falha no pagamento. pedido cancelado. contate sua instituição bancária.",
   FALHA_PRODUCAO = "seu pedido não pôde ser produzido. pedido cancelado. o pagamento será estornado.",
+  FALHA_JA_PROCESSADO = "o pagamento já foi processado"
+}
+
+export enum StatusPagamentoGateway {
+  SUCESSO = "Pagamento efetuado com sucesso",
+  FALHA = "Falha no pagamento",
 }
 
 export type StatusPagamento =
-  (typeof statusPagamento)[keyof typeof statusPagamento];
+  (typeof StatusPagamentoServico)[keyof typeof StatusPagamentoServico];

@@ -3,7 +3,7 @@ import PagamentoController from '../../../../../src/adapters/interfaceAdapters/c
 import { queueCheck } from "../../../../../src/adapters/interfaceAdapters/queues/consumers/filaEnvioPagamento";
 import MessageBrokerService from "../../../../../src/dataSources/messageBroker/messageBrokerService";
 import {
-  statusPagamento,
+  StatusPagamentoServico,
 } from "../../../../../src/domain/entities/types/pagamentoType";
 
 
@@ -13,7 +13,7 @@ const objPagamentoMock = {
   pedidoId: "123",
   valor: 10,
   metodoDePagamento: "QR Code",
-  statusPagamento: statusPagamento.AGUARDANDO_PAGAMENTO,
+  statusPagamento: StatusPagamentoServico.AGUARDANDO_PAGAMENTO,
   createdAt: new Date(),
   deletedAt: null,
   updatedAt: null,

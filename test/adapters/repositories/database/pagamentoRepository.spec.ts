@@ -3,7 +3,7 @@ import PagamentoRepository, {
 } from "../../../../src/adapters/repositories/database/pagamentoRepository";
 import {
   PagamentoDTO,
-  statusPagamento,
+  StatusPagamentoServico,
 } from "../../../../src/domain/entities/types/pagamentoType";
 
 describe("pagamento repository", () => {
@@ -14,7 +14,7 @@ describe("pagamento repository", () => {
       pedidoId: "1234-1234-1234",
       valor: 10,
       metodoDePagamento: "QR Code",
-      statusPagamento: statusPagamento.AGUARDANDO_PAGAMENTO,
+      statusPagamento: StatusPagamentoServico.AGUARDANDO_PAGAMENTO,
       createdAt,
       deletedAt: null,
       updatedAt: null,
@@ -25,7 +25,7 @@ describe("pagamento repository", () => {
       pedidoId: "1234-1234-1234",
       valor: 10,
       metodoDePagamento: "QR Code",
-      statusPagamento: statusPagamento.AGUARDANDO_PAGAMENTO,
+      statusPagamento: StatusPagamentoServico.AGUARDANDO_PAGAMENTO,
       createdAt,
       deletedAt: null,
       updatedAt: null,
@@ -42,7 +42,7 @@ describe("pagamento repository", () => {
       pedidoId: "1234-1234-1234",
       valor: 10,
       metodoDePagamento: "QR Code",
-      statusPagamento: statusPagamento.AGUARDANDO_PAGAMENTO,
+      statusPagamento: StatusPagamentoServico.AGUARDANDO_PAGAMENTO,
       createdAt,
       deletedAt: null,
       updatedAt: null,
@@ -53,7 +53,7 @@ describe("pagamento repository", () => {
       pedidoId: "1234-1234-1234",
       valor: 10,
       metodoDePagamento: "QR Code",
-      statusPagamento: statusPagamento.AGUARDANDO_PAGAMENTO,
+      statusPagamento: StatusPagamentoServico.AGUARDANDO_PAGAMENTO,
       createdAt,
       deletedAt: null,
       updatedAt: null,
@@ -70,7 +70,7 @@ describe("pagamento repository", () => {
       pedidoId: "1234-1234-1234",
       valor: 10,
       metodoDePagamento: "QR Code",
-      statusPagamento: statusPagamento.PAGAMENTO_CONCLUIDO,
+      statusPagamento: StatusPagamentoServico.PAGAMENTO_CONCLUIDO,
       createdAt,
       deletedAt: null,
       updatedAt: null,
@@ -81,7 +81,7 @@ describe("pagamento repository", () => {
       pedidoId: "1234-1234-1234",
       valor: 10,
       metodoDePagamento: "QR Code",
-      statusPagamento: statusPagamento.PAGAMENTO_CONCLUIDO,
+      statusPagamento: StatusPagamentoServico.PAGAMENTO_CONCLUIDO,
       createdAt,
       deletedAt: null,
       updatedAt: null,

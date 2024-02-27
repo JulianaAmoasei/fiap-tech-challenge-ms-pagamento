@@ -4,7 +4,7 @@ import PagtoProviderInterface from "../../../src/dataSources/paymentProvider/int
 import {
   MsgPedidoPagamentoBody,
   PagamentoDTO,
-  statusPagamento,
+  StatusPagamentoServico,
 } from "../../../src/domain/entities/types/pagamentoType";
 import PagamentoUseCase from "../../../src/domain/useCases/pagamentoUseCase";
 
@@ -70,7 +70,7 @@ describe("PagamentoUseCases", () => {
       _id: '123',
       pedidoId: '123',
       valor: 10,
-      statusPagamento: statusPagamento.AGUARDANDO_PAGAMENTO,
+      statusPagamento: StatusPagamentoServico.AGUARDANDO_PAGAMENTO,
       metodoDePagamento: 'QR Code',
       createdAt: new Date(),
       deletedAt: null,
@@ -83,7 +83,7 @@ describe("PagamentoUseCases", () => {
       _id: '123',
       pedidoId: '123',
       valor: 10,
-      statusPagamento: statusPagamento.FALHA,
+      statusPagamento: StatusPagamentoServico.FALHA,
       metodoDePagamento: 'QR Code',
       createdAt: new Date(),
       deletedAt: null,
@@ -116,7 +116,7 @@ describe("PagamentoUseCases", () => {
       pedidoId: "123",
       valor: 20,
       metodoDePagamento: "QR Code",
-      statusPagamento: statusPagamento.PAGAMENTO_CONCLUIDO,
+      statusPagamento: StatusPagamentoServico.PAGAMENTO_CONCLUIDO,
       createdAt: new Date(),
       deletedAt: null,
       updatedAt: null,
@@ -128,7 +128,7 @@ describe("PagamentoUseCases", () => {
     );
 
     expect(queueRepositoryMock.enviaParaFila).toHaveBeenCalledWith(
-      { pedidoId: "123", statusPagamento: statusPagamento.PAGAMENTO_CONCLUIDO },
+      { pedidoId: "123", statusPagamento: StatusPagamentoServico.PAGAMENTO_CONCLUIDO },
       process.env.URL_FILA_PEDIDO_PAGO
     );
   });
@@ -144,7 +144,7 @@ describe("PagamentoUseCases", () => {
     pedidoId: "1234-1234-1234",
     valor: 10,
     metodoDePagamento: "QR Code",
-    statusPagamento: statusPagamento.AGUARDANDO_PAGAMENTO,
+    statusPagamento: StatusPagamentoServico.AGUARDANDO_PAGAMENTO,
     createdAt: new Date(),
     deletedAt: null,
     updatedAt: null,
@@ -155,7 +155,7 @@ describe("PagamentoUseCases", () => {
     pedidoId: "1234-1234-1234",
     valor: 10,
     metodoDePagamento: "QR Code",
-    statusPagamento: statusPagamento.PAGAMENTO_CONCLUIDO,
+    statusPagamento: StatusPagamentoServico.PAGAMENTO_CONCLUIDO,
     createdAt: new Date(),
     deletedAt: null,
     updatedAt: new Date(),
@@ -178,7 +178,7 @@ describe("PagamentoUseCases", () => {
   it("Deve criar um pagamento com status AGUARDANDO_PAGAMENTO", async () => {
     const resultado = await PagamentoRepository.criaPagamento(mockMsgPagamento);
     expect(resultado.statusPagamento).toBe(
-      statusPagamento.AGUARDANDO_PAGAMENTO
+      StatusPagamentoServico.AGUARDANDO_PAGAMENTO
     );
   });
 
