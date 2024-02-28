@@ -1,7 +1,7 @@
 // import { v4 as uuidv4 } from "uuid";
 
 import Pagamento from "../../../src/domain/entities/Pagamento";
-import { PagamentoInput,statusPagamento } from "../../../src/domain/entities/types/pagamentoType";
+import { PagamentoInput, StatusPagamentoServico } from "../../../src/domain/entities/types/pagamentoType";
 
 describe("Pagamento", () => {
   it("deve criar uma nova instância de Pagamento", () => {
@@ -9,7 +9,7 @@ describe("Pagamento", () => {
       pedidoId: "1234-1234-1234",
       valor: 10,
       metodoDePagamento: "QR Core",
-      statusPagamento: statusPagamento.AGUARDANDO_PAGAMENTO,
+      statusPagamento: StatusPagamentoServico.AGUARDANDO_PAGAMENTO,
       createdAt: new Date(),
       deletedAt: null,
       updatedAt: null,
@@ -32,7 +32,7 @@ describe("Pagamento", () => {
           pedidoId: "1234-1234-1234",
           valor: 10,
           metodoDePagamento: "QR Code",
-          statusPagamento: statusPagamento.AGUARDANDO_PAGAMENTO,
+          statusPagamento: StatusPagamentoServico.AGUARDANDO_PAGAMENTO,
           createdAt: new Date(),
           deletedAt: null,
           updatedAt: null

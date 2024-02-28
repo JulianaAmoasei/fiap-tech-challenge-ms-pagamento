@@ -7,7 +7,7 @@ import {
   MsgPagtoAtualizadoBody,
   MsgPedidoPagamentoBody,
   PagamentoDTO,
-  statusPagamento,
+  StatusPagamentoServico,
   urlQrcodeQueueBody,
 } from "~domain/entities/types/pagamentoType";
 
@@ -58,7 +58,7 @@ export default class PagamentoUseCase {
       dadosPagamento._id as string,
       {
         ...JSON.parse(stringObj),
-        statusPagamento: statusPagamento.FALHA,
+        statusPagamento: StatusPagamentoServico.FALHA,
       }
     );
     await PagamentoUseCase.enviaDadosPagtoAtualizados(

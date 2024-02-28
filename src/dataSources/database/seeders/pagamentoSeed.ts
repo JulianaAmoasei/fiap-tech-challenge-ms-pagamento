@@ -1,14 +1,14 @@
 import { pagamentoModel } from "adapters/repositories/database/pagamentoRepository";
 import { v4 as uuidv4 } from "uuid";
 
-import { PagamentoInput, statusPagamento } from "~domain/entities/types/pagamentoType";
+import { PagamentoInput, StatusPagamentoServico } from "~domain/entities/types/pagamentoType";
 
 const pagamentosFake: PagamentoInput[] = [
   {
     pedidoId: uuidv4(),
     valor: 25,
     metodoDePagamento: "QR Code",
-    statusPagamento: statusPagamento.AGUARDANDO_PAGAMENTO,
+    statusPagamento: StatusPagamentoServico.AGUARDANDO_PAGAMENTO,
     createdAt: new Date(),
     deletedAt: null,
     updatedAt: null,
@@ -17,7 +17,7 @@ const pagamentosFake: PagamentoInput[] = [
     pedidoId: uuidv4(),
     valor: 50,
     metodoDePagamento: "QR Code",
-    statusPagamento: statusPagamento.AGUARDANDO_PAGAMENTO,
+    statusPagamento: StatusPagamentoServico.AGUARDANDO_PAGAMENTO,
     createdAt: new Date(),
     deletedAt: null,
     updatedAt: null,
@@ -26,7 +26,7 @@ const pagamentosFake: PagamentoInput[] = [
     pedidoId: uuidv4(),
     valor: 12,
     metodoDePagamento: "QR Code",
-    statusPagamento: statusPagamento.PAGAMENTO_CONCLUIDO,
+    statusPagamento: StatusPagamentoServico.PAGAMENTO_CONCLUIDO,
     createdAt: new Date(),
     deletedAt: null,
     updatedAt: new Date(),

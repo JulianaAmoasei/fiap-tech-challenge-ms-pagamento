@@ -78,12 +78,12 @@ Given('existe um pagamento criado', function () {
 });
 
 When('eu invoco a api para mudar o status do pagamento', async function () {
-  response = await fetch(`${url_endpoint}/api/pagamento/processamento/${pedidoId}`);
+  response = await fetch(`${url_endpoint}/api/pagamento/processamento/`);
 });
 
 Then('deve retornar a confirmacao da mudanca', async function () {
   const respBody = await response.json();
-  assert.equal(respBody?.mensagem, 'Processamento realizado');
+  assert.equal(respBody?.mensagem, 'Pagamento realizado');
 
 });
 
@@ -97,7 +97,7 @@ Given('existe um pagamento que já foi processado', function () {
 });
 
 When('eu invoco a api para mudar o status do pagamento já processado', async function () {
-  response = await fetch(`${url_endpoint}/api/pagamento/processamento/${pedidoId}`);
+  response = await fetch(`${url_endpoint}/api/pagamento/processamento/`);
 });
 
 Then('deve retornar a mensagem que já foi processado', async function () {
