@@ -4,6 +4,8 @@ import PagtoProviderInterface from "dataSources/paymentProvider/interfaces/Pagto
 
 import PagamentoError from "~domain/entities/errors/PagamentoErrors";
 import {
+  estornoGatewayBody,
+  MsgCancelamentoPedidoBody,
   MsgPagtoAtualizadoBody,
   MsgPedidoPagamentoBody,
   PagamentoDTO,
@@ -34,6 +36,30 @@ export default class PagamentoUseCase {
     }
   }
 
+  static async estornaCobrancaPagamento(
+    queueRepository: QueueRepository,
+    pagtoProvider: PagtoProviderInterface,
+    pagamento: MsgCancelamentoPedidoBody
+  ): Promise<estornoGatewayBody> {
+    try {
+      const dadosCobranca = await pagtoProvider.estornaCobranca(pagamento);
+      if (dadosCobranca instanceof Error) {
+        throw dadosCobranca;
+      }
+      queueRepository.enviaParaFila<estornoGatewayBody | Error>(
+        dadosCobranca,
+        process.env.URL_FILA_ATUALIZA_PEDIDO as string
+      );
+      return dadosCobranca;
+    } catch (error) {
+      if (error instanceof PagamentoError) {
+        await this.cancelaCobranca(pagamento, queueRepository);
+        throw error;
+      }
+      throw Error('erro não esperado')
+    }
+  }
+
   static async enviaDadosPagtoAtualizados(
     queueRepository: QueueRepository,
     dadosPagamento: PagamentoDTO
@@ -44,11 +70,11 @@ export default class PagamentoUseCase {
     };
     queueRepository.enviaParaFila<MsgPagtoAtualizadoBody>(
       body,
-      process.env.URL_FILA_PEDIDO_PAGO as string
+      process.env.URL_FILA_ATUALIZA_PEDIDO as string
     );
   }
 
-  static async cancelaCobranca(pagamento: MsgPedidoPagamentoBody, queueRepository: QueueRepository) {
+  static async cancelaCobranca<T extends { pedidoId: string }>(pagamento: T, queueRepository: QueueRepository): Promise<void>{
     const dadosPagamento = await PagamentoRepository.listaPagamento(
       pagamento.pedidoId
     );

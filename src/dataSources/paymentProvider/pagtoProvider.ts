@@ -1,7 +1,9 @@
 import QRCode from "qrcode";
+import { v4 as uuidv4 } from "uuid";
 
 import PagamentoError from "~domain/entities/errors/PagamentoErrors";
 import {
+  estornoGatewayBody,
   MsgPedidoPagamentoBody,
   PagamentoErrorCodes,
   urlQrcodeQueueBody,
@@ -21,6 +23,18 @@ export default class PagtoProvider implements PagtoProviderInterface {
       
     } catch (error) {
       const errorCode: PagamentoErrorCodes = PagamentoErrorCodes.FALHA_CONEXAO_PROVIDER;
+      throw new PagamentoError(errorCode);
+    }
+  }
+
+  async estornaCobranca(
+    pagamento: MsgPedidoPagamentoBody
+  ): Promise<estornoGatewayBody> {
+    try {
+      return { pedidoId: pagamento.pedidoId, estornoId: uuidv4() } as estornoGatewayBody;
+      
+    } catch (error) {
+      const errorCode: PagamentoErrorCodes = PagamentoErrorCodes.FALHA_PRODUCAO;
       throw new PagamentoError(errorCode);
     }
   }

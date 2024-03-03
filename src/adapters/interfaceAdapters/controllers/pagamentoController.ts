@@ -4,6 +4,7 @@ import PagtoProviderInterface from "dataSources/paymentProvider/interfaces/Pagto
 import PagamentoUseCase from "~domain/useCases/pagamentoUseCase";
 
 import {
+  MsgCancelamentoPedidoBody,
   MsgPedidoPagamentoBody,
   PagamentoDTO,
   StatusPagamentoGateway,
@@ -24,6 +25,30 @@ export default class PagamentoController {
       pagamento
     );
     return PagamentoRepository.criaPagamento(pagamento);
+  }
+
+  static async estornaPagamento(
+    queueRepository: QueueRepository,
+    pagtoProvider: PagtoProviderInterface,
+    pagamento: MsgCancelamentoPedidoBody
+  ) {
+    const dadosEstornoPagamento = await PagamentoUseCase.estornaCobrancaPagamento(
+      queueRepository,
+      pagtoProvider,
+      pagamento
+    );
+    const dadosPagto: PagamentoDTO = await PagamentoRepository.listaPagamento(
+      pagamento.pedidoId
+    );
+    const stringObj = JSON.stringify(dadosPagto);
+
+    return PagamentoRepository.atualizaPagamento(
+      dadosPagto._id as string,
+      {
+        ...JSON.parse(stringObj),
+        estornoId: dadosEstornoPagamento.estornoId,
+      }
+    );
   }
 
   static async listaPagamento(id: string) {

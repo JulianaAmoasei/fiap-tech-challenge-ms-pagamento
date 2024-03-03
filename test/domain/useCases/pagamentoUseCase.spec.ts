@@ -22,6 +22,10 @@ describe("PagamentoUseCases", () => {
         pedidoId: "123",
         qrUrl: "http://apipagamento.com",
       }),
+      estornaCobranca: jest.fn().mockRejectedValue({
+        pedidoId: "123",
+        estornoId: "456"
+      }),
     };
 
     const pagamento: MsgPedidoPagamentoBody = {
@@ -55,6 +59,10 @@ describe("PagamentoUseCases", () => {
       .fn()
       .mockImplementationOnce(() => {
         throw new Error("Erro do gateway");
+      }),
+      estornaCobranca: jest.fn().mockRejectedValue({
+        pedidoId: "123",
+        estornoId: "456"
       }),
     };
 
@@ -129,7 +137,7 @@ describe("PagamentoUseCases", () => {
 
     expect(queueRepositoryMock.enviaParaFila).toHaveBeenCalledWith(
       { pedidoId: "123", statusPagamento: StatusPagamentoServico.PAGAMENTO_CONCLUIDO },
-      process.env.URL_FILA_PEDIDO_PAGO
+      process.env.URL_FILA_ATUALIZA_PEDIDO
     );
   });
 

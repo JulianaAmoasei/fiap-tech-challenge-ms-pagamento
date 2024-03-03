@@ -7,6 +7,7 @@ export interface PagamentoDTO {
   createdAt: Date;
   deletedAt: Date | null;
   updatedAt: Date | null;
+  estornoId?: string;
 }
 
 export interface PagamentoInput {
@@ -32,9 +33,18 @@ export interface MsgCobrancaBody {
   valor: number;
 }
 
+export interface MsgCancelamentoPedidoBody {
+  pedidoId: string;
+}
+
 export interface urlQrcodeQueueBody {
   pedidoId: string;
   qrUrl: string;
+}
+
+export interface estornoGatewayBody {
+  pedidoId: string;
+  estornoId: string;
 }
 
 export interface MsgPagtoAtualizadoBody {
@@ -57,6 +67,7 @@ export enum StatusPagamentoServico {
   AGUARDANDO_PAGAMENTO = "Aguardando pagamento",
   FALHA = "Falha no processo de pagamento",
   PAGAMENTO_CONCLUIDO = "Pagamento concluído",
+  PAGAMENTO_ESTORNADO = "Pagamento estornado"
 }
 
 export enum PagamentoErrorCodes {
