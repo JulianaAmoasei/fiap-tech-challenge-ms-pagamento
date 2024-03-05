@@ -12,19 +12,33 @@ describe("serviço externo de pagamento", () => {
   it("deve gerar url do qrcode", async () => {
     const pagtoProvider = new PagtoProvider();
     const result = await pagtoProvider.geraCobranca(pagamento);
-    
-    expect(result).toHaveProperty('pedidoId');
-    expect(result).toHaveProperty('qrUrl');
+
+    expect(result).toHaveProperty("pedidoId");
+    expect(result).toHaveProperty("qrUrl");
     expect(result.pedidoId).toBe(pagamento.pedidoId);
   });
   it("deve lançar erro em caso de falha no gateway", async () => {
-    QRCode.toDataURL = jest
-    .fn()
-    .mockImplementationOnce(() => {
+    QRCode.toDataURL = jest.fn().mockImplementationOnce(() => {
       throw new Error("Erro do gateway");
     });
 
     const pagtoProvider = new PagtoProvider();
-    await expect(pagtoProvider.geraCobranca(pagamento)).rejects.toThrow(PagamentoError);
-  })
+    await expect(pagtoProvider.geraCobranca(pagamento)).rejects.toThrow(
+      PagamentoError
+    );
+  });
+
+  it("deve retornar objeto com id do estorno", async () => {
+    const pagamento = {
+      pedidoId: "123",
+      metodoDePagamento: "QR Code",
+      valor: 10,
+    };
+
+    const pagtoProvider = new PagtoProvider();
+    const result = await pagtoProvider.estornaCobranca(pagamento);
+    expect(result).toHaveProperty("pedidoId");
+    expect(result).toHaveProperty("estornoId");
+  });
+
 });

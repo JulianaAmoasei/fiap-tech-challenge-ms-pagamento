@@ -74,7 +74,8 @@ export enum PagamentoErrorCodes {
   FALHA_CONEXAO_PROVIDER = "falha na conexão com provedor de pagamento. pedido cancelado.",
   FALHA_PAGAMENTO = "falha no pagamento. pedido cancelado. contate sua instituição bancária.",
   FALHA_PRODUCAO = "seu pedido não pôde ser produzido. pedido cancelado. o pagamento será estornado.",
-  FALHA_JA_PROCESSADO = "o pagamento já foi processado"
+  FALHA_JA_PROCESSADO = "o pagamento já foi processado",
+  FALHA_ESTORNO = "O estorno do pagamento falhou. Contate o provedor do serviço."
 }
 
 export enum StatusPagamentoGateway {

@@ -46,6 +46,7 @@ export default class PagamentoController {
       dadosPagto._id as string,
       {
         ...JSON.parse(stringObj),
+        statusPagamento: StatusPagamentoServico.PAGAMENTO_ESTORNADO,
         estornoId: dadosEstornoPagamento.estornoId,
       }
     );
