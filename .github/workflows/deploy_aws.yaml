@@ -91,13 +91,17 @@ jobs:
               PORT=${{ secrets.PORT }}
               MONGODB_CONNECTIONSTRING=${{ secrets.MONGODB_CONNECTIONSTRING }}
               MONGODB_DB_NAME=${{ secrets.MONGODB_DB_NAME }}
-              FILA_PEDIDO_PAGO=${{ secrets.FILA_PEDIDO_PAGO }}
-              URL_FILA_PEDIDO_PAGO=${{ secrets.URL_FILA_PEDIDO_PAGO }}
+              FILA_ATUALIZA_PEDIDO=${{ secrets.FILA_ATUALIZA_PEDIDO }}
+              URL_FILA_ATUALIZA_PEDIDO=${{ secrets.URL_FILA_ATUALIZA_PEDIDO }}
               FILA_ENVIO_COBRANCA=${{ secrets.FILA_ENVIO_COBRANCA }}
               URL_FILA_ENVIO_COBRANCA=${{ secrets.URL_FILA_ENVIO_COBRANCA }}
               FILA_ENVIO_PAGAMENTO=${{ secrets.FILA_ENVIO_PAGAMENTO }}
               URL_FILA_ENVIO_PAGAMENTO=${{ secrets.URL_FILA_ENVIO_PAGAMENTO }}
               URL_FILA_ENVIO_PAGAMENTO_DLQ=${{ secrets.URL_FILA_ENVIO_PAGAMENTO_DLQ }}
+              FILA_CANCELAMENTO_PEDIDO=${{ secrets.FILA_CANCELAMENTO_PEDIDO }}
+              URL_FILA_CANCELAMENTO_PEDIDO=${{ secrets.URL_FILA_CANCELAMENTO_PEDIDO }}
+              URL_FILA_CANCELAMENTO_PEDIDO_DLQ=${{ secrets.URL_FILA_CANCELAMENTO_PEDIDO_DLQ }}
+
               AWS_ECS_ROLE=${{ secrets.AWS_ECS_ROLE }}
 
       - name: Deploy Amazon ECS task definition

@@ -2,30 +2,30 @@ import PagamentoController from "adapters/interfaceAdapters/controllers/pagament
 import MessageBrokerService from "dataSources/messageBroker/messageBrokerService";
 import PagtoProvider from "dataSources/paymentProvider/pagtoProvider";
 
-import { MsgPedidoPagamentoBody } from "~domain/entities/types/pagamentoType";
+import { MsgCancelamentoPedidoBody } from "~domain/entities/types/pagamentoType";
 
-const URL_FILA_ENVIO_PAGAMENTO = process.env.URL_FILA_ENVIO_PAGAMENTO as string;
-const URL_FILA_ENVIO_PAGAMENTO_DLQ = process.env.URL_FILA_ENVIO_PAGAMENTO_DLQ as string;
+const URL_FILA_CANCELAMENTO_PEDIDO = process.env.URL_FILA_CANCELAMENTO_PEDIDO as string;
+const URL_FILA_CANCELAMENTO_PEDIDO_DLQ = process.env.URL_FILA_CANCELAMENTO_PEDIDO_DLQ as string;
 
 const queueService = new MessageBrokerService();
 const pagtoProvider = new PagtoProvider();
 
 export async function queueCheck() {
-  const mgsPagtos = await queueService.recebeMensagem<MsgPedidoPagamentoBody>(
-    URL_FILA_ENVIO_PAGAMENTO
+  const mgsPagtosCancelados = await queueService.recebeMensagem<MsgCancelamentoPedidoBody>(
+    URL_FILA_CANCELAMENTO_PEDIDO
   );
-  return mgsPagtos?.map(async (pagamento) => {
+  return mgsPagtosCancelados?.map(async (pagamento) => {
     try {
-      await PagamentoController.recebePagamento(queueService, pagtoProvider, pagamento.body);
+      await PagamentoController.estornaPagamento(queueService, pagtoProvider, pagamento.body);
       await queueService.deletaMensagemProcessada(
-        URL_FILA_ENVIO_PAGAMENTO,
+        URL_FILA_CANCELAMENTO_PEDIDO,
         pagamento.receiptHandle as string
       );
     } catch (err) {
       console.error(err);
       queueService.enviaParaDLQ(
-        URL_FILA_ENVIO_PAGAMENTO,
-        URL_FILA_ENVIO_PAGAMENTO_DLQ,
+        URL_FILA_CANCELAMENTO_PEDIDO,
+        URL_FILA_CANCELAMENTO_PEDIDO_DLQ,
         {
           Body: JSON.stringify(pagamento.body),
           ReceiptHandle: pagamento.receiptHandle as string,
@@ -36,7 +36,7 @@ export async function queueCheck() {
   });
 }
 export default async function QueueMonitoring() {
-  console.log(`Buscando mensagens na fila ${URL_FILA_ENVIO_PAGAMENTO}`);
+  console.log(`Buscando mensagens na fila ${URL_FILA_CANCELAMENTO_PEDIDO}`);
   await queueCheck();
   await new Promise((resolve) => setTimeout(resolve, 5000));
   await QueueMonitoring();

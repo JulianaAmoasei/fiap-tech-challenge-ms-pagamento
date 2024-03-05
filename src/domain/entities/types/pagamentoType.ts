@@ -7,6 +7,7 @@ export interface PagamentoDTO {
   createdAt: Date;
   deletedAt: Date | null;
   updatedAt: Date | null;
+  estornoId?: string;
 }
 
 export interface PagamentoInput {
@@ -32,9 +33,18 @@ export interface MsgCobrancaBody {
   valor: number;
 }
 
+export interface MsgCancelamentoPedidoBody {
+  pedidoId: string;
+}
+
 export interface urlQrcodeQueueBody {
   pedidoId: string;
   qrUrl: string;
+}
+
+export interface estornoGatewayBody {
+  pedidoId: string;
+  estornoId: string;
 }
 
 export interface MsgPagtoAtualizadoBody {
@@ -57,13 +67,15 @@ export enum StatusPagamentoServico {
   AGUARDANDO_PAGAMENTO = "Aguardando pagamento",
   FALHA = "Falha no processo de pagamento",
   PAGAMENTO_CONCLUIDO = "Pagamento concluído",
+  PAGAMENTO_ESTORNADO = "Pagamento estornado"
 }
 
 export enum PagamentoErrorCodes {
   FALHA_CONEXAO_PROVIDER = "falha na conexão com provedor de pagamento. pedido cancelado.",
   FALHA_PAGAMENTO = "falha no pagamento. pedido cancelado. contate sua instituição bancária.",
   FALHA_PRODUCAO = "seu pedido não pôde ser produzido. pedido cancelado. o pagamento será estornado.",
-  FALHA_JA_PROCESSADO = "o pagamento já foi processado"
+  FALHA_JA_PROCESSADO = "o pagamento já foi processado",
+  FALHA_ESTORNO = "O estorno do pagamento falhou. Contate o provedor do serviço."
 }
 
 export enum StatusPagamentoGateway {
