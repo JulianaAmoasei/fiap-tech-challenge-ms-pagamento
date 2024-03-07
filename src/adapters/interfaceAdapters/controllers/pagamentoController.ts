@@ -72,7 +72,7 @@ export default class PagamentoController {
     const stringObj = JSON.stringify(dadosPagto);
 
     const statusPagamento =
-      resultPagamentoResponse.statusPagamento === StatusPagamentoGateway.SUCESSO
+      resultPagamentoResponse.pagamentoEfetuado
         ? StatusPagamentoServico.PAGAMENTO_CONCLUIDO
         : StatusPagamentoServico.FALHA;
 

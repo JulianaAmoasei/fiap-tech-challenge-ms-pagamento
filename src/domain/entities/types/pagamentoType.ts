@@ -45,6 +45,7 @@ export interface urlQrcodeQueueBody {
 export interface estornoGatewayBody {
   pedidoId: string;
   estornoId: string;
+  statusPagamento?: StatusPagamentoServico
 }
 
 export interface MsgPagtoAtualizadoBody {
