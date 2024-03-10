@@ -90,12 +90,12 @@ pagamentoRouter.post(
       const { pedidoId } = req.params;
       const { pagamentoEfetuado } = req.body;
 
-      await PagamentoController.atualizaStatusPagamento(queueService, {
+      const processamento = await PagamentoController.atualizaStatusPagamento(queueService, {
         pedidoId,
         pagamentoEfetuado,
       });
 
-      return res.status(200).json({ 'mensagem': 'Processamento realizado' });
+      return res.status(200).json({ 'mensagem': processamento?.statusPagamento });
     } catch (err: any) {
       if (err.message === 'pagamento_ja_processado') {
         return res.status(200).json({ 'mensagem': 'Processamento já foi realizado' })

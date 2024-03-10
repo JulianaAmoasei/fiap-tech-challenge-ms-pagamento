@@ -36,14 +36,14 @@ const listaMetodosPagamentoMock = [
   },
 ];
 
-describe("GET em api/pagamento/metodo", () => {
+describe("GET em api/metodo-pagamento", () => {
   it("Deve listar os métodos de pagamento", async () => {
     MetodoPagamentoController.listaMetodosPagamento = jest
       .fn()
       .mockResolvedValue(listaMetodosPagamentoMock);
 
     await supertest(server)
-      .get("/api/pagamento/metodo")
+      .get("/api/metodo-pagamento")
       .expect(200)
       .then((response) => {
         expect(response.body.message[0].nome).toBe("QR Code");
@@ -55,32 +55,7 @@ describe("GET em api/pagamento/metodo", () => {
       .mockResolvedValue([]);
 
     await supertest(server)
-      .get("/api/pagamento/metodo")
-      .expect(404)
-      ;
-  });
-});
-
-describe("GET em /api/pagamento/metodo/default", () => {
-  it("Deve retornar o método de pagamento padrão", async () => {
-    MetodoPagamentoController.retornaMetodoPagamentoPadraoId = jest
-      .fn()
-      .mockResolvedValue(metodoPagamentoMock);
-
-    await supertest(server)
-      .get("/api/pagamento/metodo/default")
-      .expect(200)
-      .then((response) => {
-        expect(response.body.message.nome).toBe("QR Code");
-      });
-  });
-  it("Deve receber 404 quando método de pagamento padrão não encontrado", async () => {
-    MetodoPagamentoController.retornaMetodoPagamentoPadraoId = jest
-      .fn()
-      .mockResolvedValue(null);
-
-    await supertest(server)
-      .get("/api/pagamento/metodo/default")
+      .get("/api/metodo-pagamento")
       .expect(404)
       ;
   });

@@ -259,7 +259,7 @@ describe("PagamentoUseCases", () => {
 
     expect(pagtoProviderMock.estornaCobranca).toHaveBeenCalledWith(pagamento);
     expect(queueRepositoryMock.enviaParaFila).toHaveBeenCalledWith(
-      { pedidoId: "123", estornoId: "456" },
+      { pedidoId: "123", estornoId: "456", statusPagamento: "Pagamento estornado" },
       process.env.URL_FILA_ATUALIZA_PEDIDO
     );
     expect(result).toEqual({ pedidoId: "123", estornoId: "456" });

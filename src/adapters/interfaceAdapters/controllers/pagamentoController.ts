@@ -7,7 +7,6 @@ import {
   MsgCancelamentoPedidoBody,
   MsgPedidoPagamentoBody,
   PagamentoDTO,
-  StatusPagamentoGateway,
   StatusPagamentoServico,
 } from "../../../domain/entities/types/pagamentoType";
 import PagamentoRepository from "../../repositories/database/pagamentoRepository";
