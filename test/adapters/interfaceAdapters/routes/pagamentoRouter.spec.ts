@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from "uuid";
 import PagamentoController from "../../../../src/adapters/interfaceAdapters/controllers/pagamentoController";
 import routes from "../../../../src/adapters/interfaceAdapters/routes";
 import { RecebimentoDePagamentoGatewayBody } from "../../../../src/adapters/interfaceAdapters/routes/schemas/pagamentoRouter.schema";
-import { PagamentoDTO, StatusPagamentoGateway,StatusPagamentoServico } from "../../../../src/domain/entities/types/pagamentoType";
+import { PagamentoDTO,ProcessPagamentoReturnBody,StatusPagamentoServico } from "../../../../src/domain/entities/types/pagamentoType";
 
 const app = express();
 app.use(express.json());
@@ -29,24 +29,24 @@ const registroPagamentoMock: PagamentoDTO = {
 
 const pagamentoSucessoMock: RecebimentoDePagamentoGatewayBody = {
   pedidoId: uuidv4(),
-  statusPagamento: StatusPagamentoGateway.SUCESSO,
+  pagamentoEfetuado: true
 };
 
 const pagamentoFalhaMock: RecebimentoDePagamentoGatewayBody = {
   pedidoId: uuidv4(),
-  statusPagamento: StatusPagamentoGateway.FALHA,
+  pagamentoEfetuado: false
 };
 
 const idMock = "123";
 
-describe("GET em /api/pagamento/:id", () => {
+describe("GET em /api/pagamentos/:id", () => {
   it("Deve buscar um pagamento pelo id", async () => {
     PagamentoController.listaPagamento = jest
       .fn()
       .mockResolvedValue(registroPagamentoMock);
 
     await supertest(server)
-      .get(`/api/pagamento/${idMock}`)
+      .get(`/api/pagamentos/${idMock}`)
       .expect(200)
       .then((response) => {
         expect(response.body.pagamento.valor).toBe(registroPagamentoMock.valor);
@@ -61,33 +61,35 @@ describe("GET em /api/pagamento/:id", () => {
       .fn()
       .mockResolvedValue(null);
 
-    await supertest(server).get("/api/pagamento/1").expect(404);
+    await supertest(server).get("/api/pagamentos/1").expect(404);
   });
 });
 
 describe("POST em /api/pagamento/processamento/", () => {
   it("Deve atualizar um pagamento pelo id em caso de sucesso", async () => {
+    registroPagamentoMock.statusPagamento = StatusPagamentoServico.PAGAMENTO_CONCLUIDO
     PagamentoController.atualizaStatusPagamento = jest
       .fn()
       .mockResolvedValue(registroPagamentoMock);
 
     await supertest(server)
-      .post(`/api/pagamento/processamento/`)
+      .post(`/api/pagamentos/processamento/${pagamentoSucessoMock.pedidoId}`)
       .send(pagamentoSucessoMock)
       .set('Accept', 'application/json')
       .expect(200)
       .then(response => {
-        expect(response.body.mensagem).toEqual('Pagamento realizado');
+        expect(response.body.mensagem).toEqual('Pagamento concluído');
      })
   });
 
   it("Deve atualizar um pagamento pelo id em caso de falha", async () => {
+    registroPagamentoMock.statusPagamento = ProcessPagamentoReturnBody.FALHA;
     PagamentoController.atualizaStatusPagamento = jest
       .fn()
       .mockResolvedValue(registroPagamentoMock);
 
       await supertest(server)
-      .post(`/api/pagamento/processamento/`)
+      .post(`/api/pagamentos/processamento/${pagamentoFalhaMock.pedidoId}`)
       .send(pagamentoFalhaMock)
       .set('Accept', 'application/json')
       .expect(200)

@@ -26,7 +26,7 @@ export default class MessageBrokerService implements QueueRepository {
     };
 
     if (process.env.NODE_ENV === "development" || process.env.NODE_ENV === "test") {
-      configuration.endpoint = 'http://localhost:4566'
+      configuration.endpoint = process.env.QUEUE_DEVELOPMENT_ENDPOINT ?? "http://localhost:4566";
     }
     this.sqsClient = new SQSClient(configuration);
   }
@@ -82,6 +82,7 @@ export default class MessageBrokerService implements QueueRepository {
   }
 
   async enviaParaFila<T>(mensagem: T, fila: string): Promise<boolean> {
+    console.log(`Enviando mensgem para ${fila}`)
     try {
       const params = {
         QueueUrl: fila,
@@ -95,6 +96,7 @@ export default class MessageBrokerService implements QueueRepository {
 
       return true;
     } catch (err) {
+      console.log(`Fila: ${fila} - ${err}`);
       console.error(err);
     }
 

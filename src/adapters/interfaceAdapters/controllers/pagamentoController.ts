@@ -7,7 +7,6 @@ import {
   MsgCancelamentoPedidoBody,
   MsgPedidoPagamentoBody,
   PagamentoDTO,
-  StatusPagamentoGateway,
   StatusPagamentoServico,
 } from "../../../domain/entities/types/pagamentoType";
 import PagamentoRepository from "../../repositories/database/pagamentoRepository";
@@ -72,7 +71,7 @@ export default class PagamentoController {
     const stringObj = JSON.stringify(dadosPagto);
 
     const statusPagamento =
-      resultPagamentoResponse.statusPagamento === StatusPagamentoGateway.SUCESSO
+      resultPagamentoResponse.pagamentoEfetuado
         ? StatusPagamentoServico.PAGAMENTO_CONCLUIDO
         : StatusPagamentoServico.FALHA;
 

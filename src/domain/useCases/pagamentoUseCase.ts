@@ -47,7 +47,7 @@ export default class PagamentoUseCase {
         throw dadosCobranca;
       }
       queueRepository.enviaParaFila<estornoGatewayBody | Error>(
-        dadosCobranca,
+        {...dadosCobranca, statusPagamento: StatusPagamentoServico.PAGAMENTO_ESTORNADO},
         process.env.URL_FILA_ATUALIZA_PEDIDO as string
       );
       return dadosCobranca;

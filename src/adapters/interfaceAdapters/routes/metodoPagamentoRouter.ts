@@ -10,42 +10,7 @@ const metodoPagamentoRouter = express.Router();
 
 /**
  * @openapi
- * /api/pagamento/metodo/default:
- *   get:
- *     summary: Retorna o método de pagamento padrão (QR Code)
- *     tags:
- *       - MetodoPagamento
- *     requestBody:
- *       required: false
- *     responses:
- *       200:
- *         description: obj MetodoPagamento.
- *       500:
- *         description: Erro na api.
- */
-metodoPagamentoRouter.get(
-  "/api/pagamento/metodo/default",
-  (async (req: Request, res: Response, next: NextFunction): Promise<void | object> => {
-    try {
-      const message = await MetodoPagamentoController.retornaMetodoPagamentoPadraoId();
-      if (!message) {
-        console.error("ID método padrão não encontrado!");
-        return res.status(404).json({status: "error", message})
-      }
-      return res.status(200).json({
-        status: "success",
-        message,
-      });
-    } catch (err: unknown) {
-      console.error(`Erro ao consultar método de pagamento padrão: ${err}`);
-      return next(err);
-    }
-  }) as RequestHandler
-);
-
-/**
- * @openapi
- * /api/pagamento/metodo:
+ * /metodo-pagamento:
  *   get:
  *     summary: Consulta métodos de pagamento disponíveis
  *     tags:
@@ -59,7 +24,7 @@ metodoPagamentoRouter.get(
  *         description: Erro na api.
  */
 metodoPagamentoRouter.get(
-  "/api/pagamento/metodo",
+  "/api/metodo-pagamento",
   (async (req: Request, res: Response, next: NextFunction): Promise<void | object> => {
     try {
       const message = await MetodoPagamentoController.listaMetodosPagamento(); 
@@ -73,6 +38,26 @@ metodoPagamentoRouter.get(
       });
     } catch (err: unknown) {
       console.error(`Erro ao consultar lista de pagamentos: ${err}`);
+      return next(err);
+    }
+  }) as RequestHandler
+);
+
+metodoPagamentoRouter.get(
+  "/api/metodo-pagamento/default",
+  (async (req: Request, res: Response, next: NextFunction): Promise<void | object> => {
+    try {
+      const message = await MetodoPagamentoController.retornaMetodoPagamentoPadraoId();
+      if (!message) {
+        console.error("ID método padrão não encontrado!");
+        return res.status(404).json({status: "error", message})
+      }
+      return res.status(200).json({
+        status: "success",
+        message,
+      });
+    } catch (err: unknown) {
+      console.error(`Erro ao consultar método de pagamento padrão: ${err}`);
       return next(err);
     }
   }) as RequestHandler

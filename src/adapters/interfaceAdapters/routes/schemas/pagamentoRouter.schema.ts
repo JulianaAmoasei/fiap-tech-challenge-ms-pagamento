@@ -1,7 +1,5 @@
 import { z } from "zod";
 
-import { StatusPagamentoGateway } from "../../../../domain/entities/types/pagamentoType";
-
 export const RecebimentoDePagamentoGatewaySchema = z.object({
   params: z.object({}),
   body: z.object({
@@ -11,8 +9,8 @@ export const RecebimentoDePagamentoGatewaySchema = z.object({
         invalid_type_error: "id inválido",
       })
       .uuid({ message: "O id deve ser UUID" }),
-    statusPagamento: z
-      .enum([StatusPagamentoGateway.SUCESSO, StatusPagamentoGateway.FALHA])
+    pagamentoEfetuado: z
+      .boolean()
   }),
 });
 
