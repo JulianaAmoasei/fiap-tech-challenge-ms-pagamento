@@ -97,4 +97,4 @@ jobs:
         with:
           force-new-deployment: true
           task-definition: ${{ steps.task-def.outputs.task-definition }}
-          cluster: ${{ producao.ECS_CLUESTER }}
+          cluster: ${{ secrets.ECS_CLUSTER }}
