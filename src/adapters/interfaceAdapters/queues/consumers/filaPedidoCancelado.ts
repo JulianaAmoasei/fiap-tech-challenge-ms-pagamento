@@ -35,9 +35,9 @@ export async function queueCheck() {
     return null;
   });
 }
-export default async function QueueMonitoring() {
+export default async function MonitoramentoCancelamentos() {
   console.log(`Buscando mensagens na fila ${URL_FILA_CANCELAMENTO_PEDIDO}`);
   await queueCheck();
   await new Promise((resolve) => setTimeout(resolve, 5000));
-  await QueueMonitoring();
+  await MonitoramentoCancelamentos();
 }

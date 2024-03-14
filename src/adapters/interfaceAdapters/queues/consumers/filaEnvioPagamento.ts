@@ -35,9 +35,9 @@ export async function queueCheck() {
     return null;
   });
 }
-export default async function QueueMonitoring() {
+export default async function MonitoramentoPagamentos() {
   console.log(`Buscando mensagens na fila ${URL_FILA_ENVIO_PAGAMENTO}`);
   await queueCheck();
   await new Promise((resolve) => setTimeout(resolve, 5000));
-  await QueueMonitoring();
+  await MonitoramentoPagamentos();
 }

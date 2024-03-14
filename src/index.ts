@@ -1,4 +1,5 @@
-import QueueMonitoring from "adapters/interfaceAdapters/queues/consumers/filaEnvioPagamento";
+import MonitoramentoPagamentos from "adapters/interfaceAdapters/queues/consumers/filaEnvioPagamento";
+import MonitoramentoCancelamentos from "adapters/interfaceAdapters/queues/consumers/filaPedidoCancelado";
 
 import "dotenv/config";
 
@@ -9,5 +10,6 @@ export default async function init() {
   api.start();
 }
 
-QueueMonitoring();
+MonitoramentoCancelamentos();
+MonitoramentoPagamentos();
 init();
