@@ -1,8 +1,12 @@
 import conectaNaDatabase from "dataSources/database/infra/dbConfig";
 import express, { Express } from "express";
+import helmet from "helmet";
 
 import routes from "./adapters/interfaceAdapters/routes/index";
-import { metodosPagamento, seedDb } from "./dataSources/database/seeders/metodosPagamentoSeed";
+import {
+  metodosPagamento,
+  seedDb,
+} from "./dataSources/database/seeders/metodosPagamentoSeed";
 const PORT = Number(process.env.PORT) || 3000;
 
 async function conectaDb(): Promise<void> {
@@ -27,6 +31,8 @@ export default class API {
   }
 
   start() {
+    this.app.use(helmet());
+
     routes(this.app);
     this.app.listen(PORT, () => {
       console.log("servidor escutando!");
