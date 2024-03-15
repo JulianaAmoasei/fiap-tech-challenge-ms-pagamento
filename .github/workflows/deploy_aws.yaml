@@ -1,6 +1,7 @@
 name: Deploy AWS
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
@@ -31,70 +32,40 @@ jobs:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         SONAR_HOST_URL: 'https://sonarcloud.io'
 
-  deploy-ecs:
+  deploy-aws:
     needs: [ test ]
+    name: Deploy
     runs-on: ubuntu-latest
+    environment: production
 
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v4
 
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@0e613a0980cbf65ed5b322eb7a1e075d28913a83
         with:
-            aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
-            aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
-            aws-region: ${{ secrets.AWS_REGION }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Build, tag, and push docker image to Amazon ECR
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@62f4f872db3836360b72999f4b87f1ff13310f3a
+
+      - name: Build, tag, and push image to Amazon ECR
+        id: build-image
         env:
-          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          REPOSITORY: ${{secrets.ECR_REPOSITORY}}
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           IMAGE_TAG: latest
         run: |
-          echo ${{secrets.ECR_REPOSITORY}}/fiat-tech-pagamento:$IMAGE_TAG
-          docker build -t ${{secrets.ECR_REPOSITORY}}/fiat-tech-pagamento:$IMAGE_TAG .
-          docker push ${{secrets.ECR_REPOSITORY}}/fiat-tech-pagamento:$IMAGE_TAG
+          # Build a docker container and
+          # push it to ECR so that it can
+          # be deployed to ECS.
+          docker build -t $ECR_REGISTRY/${{secrets.ECR_REPOSITORY}}:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/${{secrets.ECR_REPOSITORY}}:$IMAGE_TAG
+          echo "image=$ECR_REGISTRY/${{secrets.ECR_REPOSITORY}}:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
-      - name: Update ECS TASK Definition
-        env: 
-          AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
-          AWS_ECS_ROLE: ${{ secrets.AWS_ECS_ROLE }}
+      - name: Force deployment
         run: |
-          sed -e "s/\${AWS_ACCOUNT_ID}/${AWS_ACCOUNT_ID}/g" -e "s/\${AWS_ECS_ROLE}/${AWS_ECS_ROLE}/g" ecs/task-definition-template.json > ecs/task-definition.json
-
-      - name: Fill in the new image ID in the Amazon ECS task definition
-        id: task-def
-        uses: aws-actions/amazon-ecs-render-task-definition@v1
-        with:
-          task-definition: ecs/task-definition.json
-          container-name: fiat-tech-pagamento
-          image: ${{secrets.ECR_REPOSITORY}}/fiat-tech-pagamento:latest
-          environment-variables: |
-              NODE_ENV=${{ secrets.NODE_ENV }}
-              AWS_REGION=${{ secrets.AWS_REGION }}
-              AWS_ACCESS_KEY=${{ secrets.AWS_ACCESS_KEY }}
-              AWS_SECRET_KEY=${{ secrets.AWS_SECRET_KEY }}
-              PORT=${{ secrets.PORT }}
-              MONGODB_CONNECTIONSTRING=${{ secrets.MONGODB_CONNECTIONSTRING }}
-              MONGODB_DB_NAME=${{ secrets.MONGODB_DB_NAME }}
-              FILA_ATUALIZA_PEDIDO=${{ secrets.FILA_ATUALIZA_PEDIDO }}
-              URL_FILA_ATUALIZA_PEDIDO=${{ secrets.URL_FILA_ATUALIZA_PEDIDO }}
-              FILA_PEDIDO_PAGO=${{ secrets.FILA_PEDIDO_PAGO }}
-              URL_FILA_PEDIDO_PAGO=${{ secrets.URL_FILA_PEDIDO_PAGO }}
-              FILA_ENVIO_COBRANCA=${{ secrets.FILA_ENVIO_COBRANCA }}
-              URL_FILA_ENVIO_COBRANCA=${{ secrets.URL_FILA_ENVIO_COBRANCA }}
-              FILA_ENVIO_PAGAMENTO=${{ secrets.FILA_ENVIO_PAGAMENTO }}
-              URL_FILA_ENVIO_PAGAMENTO=${{ secrets.URL_FILA_ENVIO_PAGAMENTO }}
-              URL_FILA_ENVIO_PAGAMENTO_DLQ=${{ secrets.URL_FILA_ENVIO_PAGAMENTO_DLQ }}
-              FILA_CANCELAMENTO_PEDIDO=${{ secrets.FILA_CANCELAMENTO_PEDIDO }}
-              URL_FILA_CANCELAMENTO_PEDIDO=${{ secrets.URL_FILA_CANCELAMENTO_PEDIDO }}
-              URL_FILA_CANCELAMENTO_PEDIDO_DLQ=${{ secrets.URL_FILA_CANCELAMENTO_PEDIDO_DLQ }}
-              URL_FILA_ATUALIZA_PEDIDO=${{ secrets.URL_FILA_ATUALIZA_PEDIDO }}
-
-      - name: Deploy Amazon ECS task definition
-        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
-        with:
-          force-new-deployment: true
-          task-definition: ${{ steps.task-def.outputs.task-definition }}
-          cluster: ${{ secrets.ECS_CLUSTER }}
+          aws ecs update-service --cluster ${{secrets.ECS_CLUESTER}} --service ${{secrets.ECS_SERVICE}} --force-new-deployment
