@@ -26,11 +26,11 @@ jobs:
         yarn test --coverage
         npx eslint src --ext .js,.jsx,.ts,.tsx
 
-    # - name: SonarQube Scan
-    #   uses: sonarsource/sonarqube-scan-action@master
-    #   env:
-    #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-    #     SONAR_HOST_URL: 'https://sonarcloud.io'
+    - name: SonarQube Scan
+      uses: sonarsource/sonarqube-scan-action@master
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        SONAR_HOST_URL: 'https://sonarcloud.io'
 
   deploy-aws:
     needs: [ test ]

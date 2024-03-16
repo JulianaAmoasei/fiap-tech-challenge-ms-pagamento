@@ -61,6 +61,9 @@ export default class PagamentoController {
     const dadosPagto: PagamentoDTO = await PagamentoRepository.listaPagamento(
       resultPagamentoResponse.pedidoId
     );
+    if(!dadosPagto) {
+      throw Error("pagamento nao encontrado");
+    }
 
     if (
       dadosPagto.statusPagamento !== StatusPagamentoServico.AGUARDANDO_PAGAMENTO
