@@ -37,12 +37,12 @@ export interface MsgCancelamentoPedidoBody {
   pedidoId: string;
 }
 
-export interface urlQrcodeQueueBody {
+export interface UrlQrcodeQueueBody {
   pedidoId: string;
   qrUrl: string;
 }
 
-export interface estornoGatewayBody {
+export interface EstornoGatewayBody {
   pedidoId: string;
   estornoId: string;
   statusPagamento?: StatusPagamentoServico
@@ -55,7 +55,7 @@ export interface MsgPagtoAtualizadoBody {
 
 export interface RecebimentoDePagamentoGatewayBody {
   pedidoId: string;
-  statusPagamento: string;
+  pagamentoEfetuado: boolean;
 }
 
 export enum ProcessPagamentoReturnBody {

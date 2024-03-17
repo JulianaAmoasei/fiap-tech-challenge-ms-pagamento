@@ -210,7 +210,7 @@ describe("PagamentoUseCases", () => {
   it("deve retornar um pagamento através de pedidoId", async () => {
     const pedidoId = "1234-1234-1234";
     const resultado = await PagamentoRepository.listaPagamento(pedidoId);
-    expect(resultado.pedidoId).toBe(pedidoId);
+    expect(resultado?.pedidoId).toBe(pedidoId);
   });
 
   it("deve atualizar um pagamento pelo id", async () => {

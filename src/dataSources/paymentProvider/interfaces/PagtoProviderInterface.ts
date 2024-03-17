@@ -1,11 +1,11 @@
 import {
-  estornoGatewayBody,
+  EstornoGatewayBody,
   MsgCancelamentoPedidoBody,
   MsgPedidoPagamentoBody,
-  urlQrcodeQueueBody,
+  UrlQrcodeQueueBody,
 } from "~domain/entities/types/pagamentoType";
 
 export default interface PagtoProviderInterface {
-  geraCobranca(pagamento: MsgPedidoPagamentoBody): Promise<urlQrcodeQueueBody | Error>;
-  estornaCobranca(pagamento: MsgCancelamentoPedidoBody): Promise<estornoGatewayBody | Error>;
+  geraCobranca(pagamento: MsgPedidoPagamentoBody): Promise<UrlQrcodeQueueBody | Error>;
+  estornaCobranca(pagamento: MsgCancelamentoPedidoBody): Promise<EstornoGatewayBody | Error>;
 }

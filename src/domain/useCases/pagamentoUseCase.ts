@@ -4,13 +4,13 @@ import PagtoProviderInterface from "dataSources/paymentProvider/interfaces/Pagto
 
 import PagamentoError from "~domain/entities/errors/PagamentoErrors";
 import {
-  estornoGatewayBody,
+  EstornoGatewayBody,
   MsgCancelamentoPedidoBody,
   MsgPagtoAtualizadoBody,
   MsgPedidoPagamentoBody,
   PagamentoDTO,
   StatusPagamentoServico,
-  urlQrcodeQueueBody,
+  UrlQrcodeQueueBody,
 } from "~domain/entities/types/pagamentoType";
 
 export default class PagamentoUseCase {
@@ -24,7 +24,7 @@ export default class PagamentoUseCase {
       if (dadosCobranca instanceof Error) {
         throw dadosCobranca;
       }  
-      queueRepository.enviaParaFila<urlQrcodeQueueBody | Error>(
+      queueRepository.enviaParaFila<UrlQrcodeQueueBody | Error>(
         dadosCobranca,
         process.env.URL_FILA_ENVIO_COBRANCA as string
       );
@@ -40,13 +40,13 @@ export default class PagamentoUseCase {
     queueRepository: QueueRepository,
     pagtoProvider: PagtoProviderInterface,
     pagamento: MsgCancelamentoPedidoBody
-  ): Promise<estornoGatewayBody> {
+  ): Promise<EstornoGatewayBody> {
     try {
       const dadosCobranca = await pagtoProvider.estornaCobranca(pagamento);
       if (dadosCobranca instanceof Error) {
         throw dadosCobranca;
       }
-      queueRepository.enviaParaFila<estornoGatewayBody | Error>(
+      queueRepository.enviaParaFila<EstornoGatewayBody | Error>(
         {...dadosCobranca, statusPagamento: StatusPagamentoServico.PAGAMENTO_ESTORNADO},
         process.env.URL_FILA_ATUALIZA_PEDIDO as string
       );
@@ -81,7 +81,7 @@ export default class PagamentoUseCase {
     //parse necessário para acessar o _doc do mongo
     const stringObj = JSON.stringify(dadosPagamento);
     const pagtoAtualizado = await PagamentoRepository.atualizaPagamento(
-      dadosPagamento._id as string,
+      dadosPagamento?._id as string,
       {
         ...JSON.parse(stringObj),
         statusPagamento: StatusPagamentoServico.FALHA,

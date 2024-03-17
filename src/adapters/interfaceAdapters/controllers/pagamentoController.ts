@@ -36,13 +36,13 @@ export default class PagamentoController {
       pagtoProvider,
       pagamento
     );
-    const dadosPagto: PagamentoDTO = await PagamentoRepository.listaPagamento(
+    const dadosPagto: PagamentoDTO | null = await PagamentoRepository.listaPagamento(
       pagamento.pedidoId
     );
     const stringObj = JSON.stringify(dadosPagto);
 
     return PagamentoRepository.atualizaPagamento(
-      dadosPagto._id as string,
+      dadosPagto?._id as string,
       {
         ...JSON.parse(stringObj),
         statusPagamento: StatusPagamentoServico.PAGAMENTO_ESTORNADO,
@@ -58,7 +58,7 @@ export default class PagamentoController {
     queueService: QueueRepository,
     resultPagamentoResponse: RecebimentoDePagamentoGatewayBody
   ) {
-    const dadosPagto: PagamentoDTO = await PagamentoRepository.listaPagamento(
+    const dadosPagto: PagamentoDTO | null = await PagamentoRepository.listaPagamento(
       resultPagamentoResponse.pedidoId
     );
     if(!dadosPagto) {

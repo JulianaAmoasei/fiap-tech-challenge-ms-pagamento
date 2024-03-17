@@ -125,7 +125,7 @@ export default class MessageBrokerService implements QueueRepository {
                 body,
               });
             } catch (error) {
-              console.error(`Invalid JSON: ${mensagemReceived?.Body}`); // TODO - tratar mensagem invalida
+              console.error(`Invalid JSON: ${mensagemReceived?.Body}`)
             }
             return mensagens;
           },

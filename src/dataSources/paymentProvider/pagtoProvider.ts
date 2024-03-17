@@ -3,10 +3,10 @@ import { v4 as uuidv4 } from "uuid";
 
 import PagamentoError from "~domain/entities/errors/PagamentoErrors";
 import {
-  estornoGatewayBody,
+  EstornoGatewayBody,
   MsgPedidoPagamentoBody,
   PagamentoErrorCodes,
-  urlQrcodeQueueBody,
+  UrlQrcodeQueueBody,
 } from "~domain/entities/types/pagamentoType";
 
 import PagtoProviderInterface from "./interfaces/PagtoProviderInterface";
@@ -14,7 +14,7 @@ import PagtoProviderInterface from "./interfaces/PagtoProviderInterface";
 export default class PagtoProvider implements PagtoProviderInterface {
   async geraCobranca(
     pagamento: MsgPedidoPagamentoBody
-  ): Promise<urlQrcodeQueueBody> {
+  ): Promise<UrlQrcodeQueueBody> {
     try {
       const urlQrCodeFake = await QRCode.toDataURL(
         `${process.env.ENDPOINT_PROCESSA_PAGTO}/${pagamento.pedidoId}`
@@ -22,7 +22,7 @@ export default class PagtoProvider implements PagtoProviderInterface {
       return {
         pedidoId: pagamento.pedidoId,
         qrUrl: urlQrCodeFake,
-      } as urlQrcodeQueueBody;
+      } as UrlQrcodeQueueBody;
     } catch (error) {
       const errorCode: PagamentoErrorCodes =
         PagamentoErrorCodes.FALHA_CONEXAO_PROVIDER;
@@ -32,11 +32,11 @@ export default class PagtoProvider implements PagtoProviderInterface {
 
   async estornaCobranca(
     pagamento: MsgPedidoPagamentoBody
-  ): Promise<estornoGatewayBody> {
+  ): Promise<EstornoGatewayBody> {
     // mock do estorno feito pelo provider
     return {
       pedidoId: pagamento.pedidoId,
       estornoId: uuidv4(),
-    } as estornoGatewayBody;
+    } as EstornoGatewayBody;
   }
 }

@@ -97,7 +97,7 @@ pagamentoRouter.post(
 
       return res.status(200).json({ 'mensagem': processamento?.statusPagamento });
     } catch (err: any) {
-      if (err.message === 'pagamento_ja_processado') {
+      if (err.message === "o pagamento já foi processado") {
         return res.status(200).json({ 'mensagem': 'Processamento já foi realizado' })
       }
       console.error(`Erro ao processar pagamento: ${err}`);

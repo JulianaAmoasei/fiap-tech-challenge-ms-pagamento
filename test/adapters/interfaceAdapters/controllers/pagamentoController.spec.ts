@@ -2,7 +2,11 @@ import PagamentoController from "../../../../src/adapters/interfaceAdapters/cont
 import PagamentoRepository from "../../../../src/adapters/repositories/database/pagamentoRepository";
 import MessageBrokerService from "../../../../src/dataSources/messageBroker/messageBrokerService";
 import PagtoProviderInterface from "../../../../src/dataSources/paymentProvider/interfaces/PagtoProviderInterface";
-import { StatusPagamentoServico } from "../../../../src/domain/entities/types/pagamentoType";
+import {
+  PagamentoDTO,
+  RecebimentoDePagamentoGatewayBody,
+  StatusPagamentoServico,
+} from "../../../../src/domain/entities/types/pagamentoType";
 import PagamentoUseCase from "../../../../src/domain/useCases/pagamentoUseCase";
 
 describe("pagamento controller", () => {
@@ -19,7 +23,6 @@ describe("pagamento controller", () => {
   const date = new Date();
 
   it("deve chamar recebePagamento e enviar cobrança", async () => {
-
     PagamentoUseCase.enviaCobranca = jest.fn();
     PagamentoRepository.criaPagamento = jest.fn().mockResolvedValueOnce({
       _id: "123",
@@ -30,17 +33,25 @@ describe("pagamento controller", () => {
       createdAt: date,
       deletedAt: null,
       updatedAt: null,
-    })
+    });
 
     const pagamento = {
       pedidoId: "123",
       metodoDePagamento: "QR Code",
-      valor: 10
+      valor: 10,
     };
 
-    await PagamentoController.recebePagamento(queueRepository, pagtoProviderMock, pagamento);
+    await PagamentoController.recebePagamento(
+      queueRepository,
+      pagtoProviderMock,
+      pagamento
+    );
 
-    expect(PagamentoUseCase.enviaCobranca).toHaveBeenCalledWith(queueRepository, pagtoProviderMock, pagamento);
+    expect(PagamentoUseCase.enviaCobranca).toHaveBeenCalledWith(
+      queueRepository,
+      pagtoProviderMock,
+      pagamento
+    );
   });
 
   it("listaPagamento deve chamar PagamentoRepository", async () => {
@@ -122,5 +133,69 @@ describe("pagamento controller", () => {
     expect(result).toHaveProperty("estornoId");
   });
 
+  it("deve atualizar status para 'PAGAMENTO_CONCLUIDO' quando 'pagamentoEfetuado' é verdadeiro & statusPagamento é 'AGUARDANDO_PAGAMENTO'", async () => {
+    const queueService: MessageBrokerService = new MessageBrokerService();
 
+    const resultPagamentoResponse: RecebimentoDePagamentoGatewayBody = {
+      pedidoId: "123",
+      pagamentoEfetuado: true,
+    };
+    const dadosPagto: PagamentoDTO = {
+      _id: "123",
+      pedidoId: "123",
+      valor: 10,
+      metodoDePagamento: "QR Code",
+      statusPagamento: StatusPagamentoServico.AGUARDANDO_PAGAMENTO,
+      createdAt: new Date(),
+      deletedAt: null,
+      updatedAt: null,
+    };
+    const pagtoAtualizado: PagamentoDTO = {
+      _id: "123",
+      pedidoId: "123",
+      valor: 10,
+      metodoDePagamento: "QR Code",
+      statusPagamento: StatusPagamentoServico.PAGAMENTO_CONCLUIDO,
+      createdAt: new Date(),
+      deletedAt: null,
+      updatedAt: null,
+    };
+    jest
+      .spyOn(PagamentoRepository, "listaPagamento")
+      .mockResolvedValue(dadosPagto);
+    jest
+      .spyOn(PagamentoRepository, "atualizaPagamento")
+      .mockResolvedValue(pagtoAtualizado);
+    const enviaDadosPagtoAtualizadosSpy = jest.spyOn(
+      PagamentoUseCase,
+      "enviaDadosPagtoAtualizados"
+    );
+
+    const result = await PagamentoController.atualizaStatusPagamento(
+      queueService,
+      resultPagamentoResponse
+    );
+
+    expect(result).toEqual(pagtoAtualizado);
+    expect(enviaDadosPagtoAtualizadosSpy).toHaveBeenCalledWith(
+      queueService,
+      pagtoAtualizado
+    );
+  });
+
+  it("deve lançar erro em caso de pagamento inexistente", async () => {
+    const queueService: MessageBrokerService = new MessageBrokerService();
+    const resultPagamentoResponse: RecebimentoDePagamentoGatewayBody = {
+      pedidoId: "000",
+      pagamentoEfetuado: true,
+    };
+    jest.spyOn(PagamentoRepository, "listaPagamento").mockResolvedValue(null);
+
+    await expect(
+      PagamentoController.atualizaStatusPagamento(
+        queueService,
+        resultPagamentoResponse
+      )
+    ).rejects.toThrow("pagamento nao encontrado");
+  });
 });

@@ -35,7 +35,6 @@ const pagamentosFake: PagamentoInput[] = [
 
 async function seedDb(listaItens: PagamentoInput[]): Promise<void> {
   await pagamentoModel.pagamento.insertMany(listaItens);
-  // await mongoose.connection.close();
 }
 
 export { pagamentosFake, seedDb };
