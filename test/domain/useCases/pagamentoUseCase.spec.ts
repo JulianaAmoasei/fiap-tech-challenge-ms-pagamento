@@ -113,6 +113,7 @@ describe("PagamentoUseCases", () => {
       process.env.URL_FILA_ENVIO_COBRANCA
     );
   });
+
   it("deve cancelar a cobrança em caso de erro no gateway de pagamento", async () => {
     const queueRepositoryMock: QueueRepository = {
       enviaParaFila: jest.fn(),

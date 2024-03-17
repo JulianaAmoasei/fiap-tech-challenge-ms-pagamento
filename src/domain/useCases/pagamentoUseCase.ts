@@ -22,6 +22,9 @@ export default class PagamentoUseCase {
     try {
       const dadosCobranca = await pagtoProvider.geraCobranca(pagamento);
       if (dadosCobranca instanceof Error) {
+        console.log('================================================');
+        console.log(dadosCobranca);
+        
         throw dadosCobranca;
       }  
       queueRepository.enviaParaFila<UrlQrcodeQueueBody | Error>(
