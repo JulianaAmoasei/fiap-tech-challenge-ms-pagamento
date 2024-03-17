@@ -132,14 +132,17 @@ Os testes BDD podem ser executados com o comando `yarn test:bdd`.
 
 O serviço utiliza as seguintes filas para comunicação interna:
 
-`pagamento-queue`
+`novo_pagamento`
 Fila consumida pelo serviço de pagamentos para recebimento de um novo registro de pagamento com status pendente
 
-`cobranca-queue`
+`cobranca_queue`
 Fila gerada pelo serviço de pagamentos para processamento do pedido de pagamento junto ao provedor externo e geração de QR Code com dados do pedido e pagamento
 
-`pedido-pago`
-Fila gerada pelo serviço de pagamentos para ser consumida pelo serviço de pedidos, contendo dados referentes à aprovação do pagamento.
+`atualiza_pagamento`
+Fila gerada pelo serviço de pagamentos para atualização do status de pagamento de um pedido junto ao serviço de pedidos
+
+`pedido-cancelado`
+Fila consumida pelo serviço de pagamentos para casos de cancelamento de pedido após o pagamento e estorno do valor
 
 
 ## Desenvolvimento do projeto
@@ -150,9 +153,6 @@ Fila gerada pelo serviço de pagamentos para ser consumida pelo serviço de pedi
 
 ![diagrama dos serviços da aplicação](docs/Tech_Challenge_-_Arquitetura.drawio.png)
 
-- Fluxo de funcionamento do serviço de pagamentos
-
-![diagrama do fluxo do serviço de pagamentos](docs/servico-pagamentos.png)
 
 ### Estrutura do Projeto
 
@@ -168,6 +168,7 @@ O projeto foi reestruturado seguindo o padrão do clean architecture.
 │   │   │   │   ├── consumers
 │   │   │   │   └── producers
 │   │   │   └── routes
+│   │   │       └── schemas
 │   │   └── repositories
 │   │       ├── database
 │   │       └── messageBroker
@@ -181,6 +182,7 @@ O projeto foi reestruturado seguindo o padrão do clean architecture.
 │   │       └── interfaces
 │   └── domain
 │       ├── entities
+│       │   ├── errors
 │       │   └── types
 │       └── useCases
 ```
@@ -192,11 +194,13 @@ Contém a camada de domínio da aplicação e as lógicas de negócio.
 ```shell
 │   ├── domain
 │   │   ├── entities
-│   │   │   ├── types
-│   │   │   │   ├── MetodoPagamentoType.ts
-│   │   │   │   └── pagamentoType.ts
+│   │   │   ├── errors
+│   │   │   │   └── PagamentoErrors.ts
 │   │   │   ├── MetodoPagamento.ts
-│   │   │   └── Pagamento.ts
+│   │   │   ├── Pagamento.ts
+│   │   │   └── types
+│   │   │       ├── MetodoPagamentoType.ts
+│   │   │       └── pagamentoType.ts
 │   │   └── useCases
 │   │       ├── metodoPagamentoUseCase.ts
 │   │       └── pagamentoUseCase.ts
@@ -231,12 +235,15 @@ O diretório `domain` contém as entidades definidoras do negócio, como `pagame
 │   │   │   │   └── pagamentoController.ts
 │   │   │   ├── queues
 │   │   │   │   ├── consumers
-│   │   │   │   │   └── filaEnvioPagamento.ts
+│   │   │   │   │   ├── filaEnvioPagamento.ts
+│   │   │   │   │   └── filaPedidoCancelado.ts
 │   │   │   │   └── producers
 │   │   │   └── routes
 │   │   │       ├── index.ts
 │   │   │       ├── metodoPagamentoRouter.ts
 │   │   │       ├── pagamentoRouter.ts
+│   │   │       ├── schemas
+│   │   │       │   └── pagamentoRouter.schema.ts
 │   │   │       └── swaggerConfig.ts
 │   │   └── repositories
 │   │       ├── database
@@ -245,4 +252,4 @@ O diretório `domain` contém as entidades definidoras do negócio, como `pagame
 │   │       └── messageBroker
 │   │           └── messageBrokerRepository.ts
 ```
-Nos datasources e adapters foram implementados os métodos necessários para comunicação e interface com as bases de dados e serviços. 
+Nos datasources e adapters foram implementados os métodos necessários para comunicação e interface com as bases de dados e serviços.
