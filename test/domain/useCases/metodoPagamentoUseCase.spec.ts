@@ -19,20 +19,35 @@ describe("Metodo Pagamento Use Cases", () => {
   const listaPagamentosMock = jest.fn();
   const listaMetodosPagamentoMock = jest.fn();
 
-  listaPagamentosMock.mockReturnValue(mockListaPagamentos);
-  listaMetodosPagamentoMock.mockReturnValue(mockListaPagamentos);
+  it("Deve puxar uma lista de métodos de pagamento do repositório", async () => {
+    listaPagamentosMock.mockReturnValue(mockListaPagamentos);
+    listaMetodosPagamentoMock.mockReturnValue(mockListaPagamentos);
 
-  beforeEach(() => {
     MetodoPagamentoUseCase.listaPagamentos = listaPagamentosMock;
     MetodoPagamentoRepository.listaMetodosPagamento = listaMetodosPagamentoMock;
-  });
 
-  it("Deve puxar uma lista de métodos de pagamento do repositório", async () => {
     const resultado = await MetodoPagamentoUseCase.listaPagamentos();
     expect(resultado).toEqual(expect.arrayContaining(mockListaPagamentos));
   });
   it("Deve retornar do repositório corretamente", async () => {
+    listaPagamentosMock.mockReturnValue(mockListaPagamentos);
+    listaMetodosPagamentoMock.mockReturnValue(mockListaPagamentos);
+
+    MetodoPagamentoUseCase.listaPagamentos = listaPagamentosMock;
+    MetodoPagamentoRepository.listaMetodosPagamento = listaMetodosPagamentoMock;
+
     const resultado = await MetodoPagamentoRepository.listaMetodosPagamento();
     expect(resultado).toEqual(expect.arrayContaining(mockListaPagamentos));
+  });
+
+  it("Deve retornar array vazio caso não tenha nenhum método", async () => {
+    listaPagamentosMock.mockReturnValue([]);
+    listaMetodosPagamentoMock.mockReturnValue([]);
+
+    MetodoPagamentoUseCase.listaPagamentos = listaPagamentosMock;
+    MetodoPagamentoRepository.listaMetodosPagamento = listaMetodosPagamentoMock;
+
+    const resultado = await MetodoPagamentoRepository.listaMetodosPagamento();
+    expect(resultado).toEqual(expect.arrayContaining([]));
   });
 });
