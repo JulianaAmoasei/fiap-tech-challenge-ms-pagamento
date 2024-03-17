@@ -15,5 +15,9 @@ describe('MetodoPagamento Model', () => {
     });
 
     expect(pagamento.nome).toBe('QR Code');
+    expect(pagamento.ativo).toBe(true);
+    expect(pagamento.createdAt).toBe(createdAt);
+    expect(pagamento.deletedAt).toBe(null);
+    expect(pagamento.updatedAt).toBe(null);
   });
 });
