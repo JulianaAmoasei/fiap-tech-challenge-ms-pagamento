@@ -3,9 +3,6 @@ import express, { NextFunction, Request, RequestHandler,Response } from "express
 
 import MetodoPagamentoController from "../controllers/metodoPagamentoController";
 
-// import authenticate from "../middleware/auth";
-// import { validaRequisicao } from "./utils";
-
 const metodoPagamentoRouter = express.Router();
 
 /**
