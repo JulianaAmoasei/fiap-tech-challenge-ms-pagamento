@@ -1,6 +1,6 @@
-# Tech Challenge - Pós-Tech SOAT - FIAP
+# Tech Challenge - Pós-Tech SOAT - FIAP - Microservico Pagamento
 
-Este é o projeto desenvolvido durante a fase I e atualizado durante a fase IV do curso de pós-graduação em arquitetura de software da FIAP - turma II/2023.
+Este é o projeto desenvolvido durante a fase 5 do curso de pós-graduação em arquitetura de software da FIAP - turma II/2023.
 
 Membros do grupo 30:
 Diórgenes Eugênio da Silveira - RM 349116
@@ -8,50 +8,99 @@ Elton de Andrade Rodrigues - RM 349353
 Gabriel Mendes - RM 348989
 Juliana Amoasei dos Reis - RM 348666
 
-### Changelog Fase IV:
-* **Microsserviço de pagamentos**: separação da funcionalidade de pagamentos em um microsserviço isolado;
-* **Migração de banco de dados**: separação de base de dados exclusiva do serviço de pagamentos para o MongoDB/DocumentDB;
-* **Implementação de testes**: Testes unitários e de integração com cobertura de 80%; testes BDD com cucumber.js;
-* **Qualidade de código**: proteção da branch `main`, integração de código via PR e implementação de tarefas de CI para testes via GitHub Actions;
-* **Deploy automatizado**: implementação de tarefas de CI para deploy automatizado das atualizações via GitHub Actions.
+## Repositórios
 
+- [Infraestrutura](https://github.com/diorgeneseugenio/fiap-tech-challenge-soat-terraform)
+- [Producao](https://github.com/EltonARodrigues/fiap-tech-challenge-soat-producao)
+- [Produto](https://github.com/gabrielmendessilva/fiap-tech-challenge-soat-ms-produto)
+- [Pagamento](https://github.com/JulianaAmoasei/fiap-tech-challenge-ms-pagamento/tree/main)
+- [Autorizacao](https://github.com/JulianaAmoasei/fiap-auth-service-cognito)
+
+### Changelog Fase V:
+
+- **SAGA Coreografada**: Ajustado o projeto para seguir o padrao SAGA do tipo coreografado em todos os Microservicos;
+- **LGPD Remocao**: Adicionado API para requisitar a exclusao dos dados pessoais;
+- **LGPD Relatorio de impacto**: Adicionado API para relatorio de impacto dos dados pessoais;
+- **Refatoração do sistema de infraestrutura** Atualizacoes no deploy AWS e execucao no eks para testes locais;
 
 ## Propósito do projeto
 
 Fornecer um sistema para gerenciamento de pedidos para uma empresa do ramo de serviços de alimentação.
 
+## SAGA Coreografia
+
+Durante a fase 4 do projeto a separacao do monolito em microservicos seguiu o principio de desacoplamento, permitindo a melhor divisao das tarefas entre os integrantes. Ao avaliar a utilizacao de um orquestrador como SAGA observamos que essa decisão implicaria em um extenso trabalho de refatoração nos microsserviços existentes, mesmo que eles já estejam desacoplados.
+
+### Vantagens Coreografia
+Algumas vantagens da Coreografia lenvando em contexto a evolucao e desenvolvimento do nosso projeto durante as fases:
+
+- **Implementação rápida:** A coreografia é mais rápida de implementar, especialmente com um número reduzido de microsserviços e da forma que a separacao seguiu na fase 4.
+- **Simplicidade:** Não há necessidade de criar um novo serviço de orquestração, simplificando a arquitetura.
+- **Menos etapas:** O fluxo de comunicação é mais direto, envolvendo apenas o microsserviço de pedido/pagamento e a etapa de pagamento.
+
+### Revisão e Criação de Filas:
+
+Para implementar a coreografia, as filas foram revisadas e criadas utilizando o AWS SQS como sistema de mensageria. O processamento das transações internas dos microsserviços também foi revisado e corrigido para evitar que falhas de processamento afetem o fluxo do pedido.
+
+### Resultado:
+
+A coreografia parece ser a opção mais adequada para a fase 5 devido à sua simplicidade, rapidez de implementação e menor quantidade de etapas a serem gerenciadas. 
+
+Estrutura da SAGA Coreografada no projeto:
+
+![Desenho SAGA Coreagrafada do projeto](docs/saga/saga_1.png)
+Distribuicao dos microservicos:
+
+![Desenho da organizacao dos microservicos](docs/saga/organizacao_ms.png)
+Fluxo da realizacao de um pedido:
+
+![Desenho do caminho da realizacao de um pedido](docs/saga/etapas_pedido_fase.png)
+
+### Relatórios OWASP ZAP
+Disponibilizado em formato html:
+-  [Relatório Inicial](docs/owasp/producao_antes.html)
+-  [Relatório Corrigido](docs/owasp/producao_depois.html)
+
 ## Stack utilizada
 
-* Node.js v20
-* TypeScript 
-* MongoBD/Mongoose
-* Express
-* Docker
-* AWS
-  * DocumentDB
-  * SQS
-  * ECS
+- Node.js v20
+- TypeScript
+- DynamoDB
+- Express
+- Mongoose
+- Docker
+- AWS
+  - DocumentDB
+  - RDS
+  - ECS
+  - ECR
+  - SQS
+  - API GATEWAY
+  - LOAD BALANCE
 
 
-## Instalação do projeto
+## DEPLOY
+### Deploy AWS
 
-Este projeto está pronto para ser executado em um ambiente Docker. Por este motivo, será necessária apenas a instalação do Docker e/ou Kubernetes, não sendo necessária a instalação manual do projeto. Também não será necessária a instalação manual do banco de dados (MongoDB).
+O projeto é baseado na infraestrutura da AWS, o que requer o provisionamento de recursos e a configuração do deploy. As etapas incluem:
 
-Caso não tenha o Docker instalado, siga as instruções para seu sistema operacional na documentação oficial do Docker.
+Utilização do repositório de [infraestrutura](https://github.com/diorgeneseugenio/fiap-tech-challenge-soat-terraform) para realizar o deploy do Terraform na AWS.
 
-Para executar em ambiente de desenvolvimento:
+Após o provisionamento, é necessário configurar os secrets no github Action de cada repositório de microserviço. Isso permite que a cada merge na branch main seja realizado o build, push da imagem no RDS e deploy no ECS. Os procedimentos devem ser executados nos seguintes repositórios:
+- [Producao](https://github.com/EltonARodrigues/fiap-tech-challenge-soat-producao)
+- [Produto](https://github.com/gabrielmendessilva/fiap-tech-challenge-soat-ms-produto)
+- [Pagamento](https://github.com/JulianaAmoasei/fiap-tech-challenge-ms-pagamento/tree/main)
+- [Autorizacao](https://github.com/JulianaAmoasei/fiap-auth-service-cognito)
 
-* Faça o fork e clone este repositório em seu computador;
-* Entre no diretório local onde o repositório foi clonado;
-* Execute o código utilizando o Docker.
+Por fim, dentro do API Gateway criado pelo Terraform, é necessário adicionar a autorização lambda nos endpoints dos microserviços.
 
-### Docker Compose
+### EKS Local
+Para o deploy local utilize o repositorio de infra seguindo os passos do EKS + localstack no README.
 
-Utilize o comando `docker compose up` para subir o servidor local, expondo a porta 3000 em localhost. Além do container da api também subirá o serviço db com o banco de dados de desenvolvimento.
+### Desenvolvimento Localhost
 
-IMPORTANTE: Esta API está programada para ser acessada a partir de http://localhost:3000 e o banco de dados utiliza a porta 27017. Certifique-se de que não existam outros recursos ocupando as portas 3000 e 27017 antes de subir o projeto.
+Execute o microservico com o npm e o docker-compose.yml com o localstack + banco de dados para utilizar no desenvolvimento
 
-Para derrubar o serviço, execute o comando docker compose down.
 
 ## Utilização do projeto
 
@@ -59,17 +108,25 @@ Para derrubar o serviço, execute o comando docker compose down.
 
 Esta API fornece documentação no padrão OpenAPI. Os endpoints disponíveis, suas descrições e dados necessários para requisição podem ser consultados e testados em /api-docs.
 
-`GET /api/pagamento/metodo`
+`GET /api/metodo-pagamento/`
 Consulta os métodos de pagamento disponibilizados para uso da aplicação
 
-`GET /api/pagamento/metodo/default`
-Retorna o método de pagamento padrão (QR Code)
-
-`GET /api/pagamento/:pedidoId`
+`GET /api/pagamentos/:pedidoId`
 Consulta status de um pagamento via ID do pedido correspondente
 
-`GET /api/pagamento/processamento/:pedidoId`
+`POST /api/pagamentos/processamento/:pedidoId`
 Endpoint utilizado internamente pelo serviço para atualização de status de pagamento
+
+## Testes
+
+Os testes unitários e de integração podem ser executados com o comando `yarn test` ou `docker compose up test`;
+
+![testes jest](docs/testes-jest.png)
+![relatório coverage sonar](docs/testes-sonar.png)
+
+Os testes BDD podem ser executados com o comando `yarn test:bdd`.
+
+![testes cucumber](docs/testes-bdd.png)
 
 ### Mensageria
 
@@ -83,18 +140,6 @@ Fila gerada pelo serviço de pagamentos para processamento do pedido de pagament
 
 `pedido-pago`
 Fila gerada pelo serviço de pagamentos para ser consumida pelo serviço de pedidos, contendo dados referentes à aprovação do pagamento.
-
-
-## Testes
-
-Os testes unitários e de integração podem ser executados com o comando `yarn test` ou `docker compose up test`;
-
-![testes jest](docs/testes-jest.png)
-![relatório coverage sonar](docs/testes-sonar.png)
-
-Os testes BDD podem ser executados com o comando `yarn test:bdd`.
-
-![testes cucumber](docs/testes-bdd.png)
 
 
 ## Desenvolvimento do projeto
