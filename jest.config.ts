@@ -5,7 +5,7 @@ import { compilerOptions } from './tsconfig.json';
 const config: Config = {
   verbose: true,
   coverageDirectory: "coverage",
-  coveragePathIgnorePatterns: ["/node_modules/", "/dist/", "/docs/"],
+  coveragePathIgnorePatterns: ["/node_modules/", "/dist/", "/docs/", "src/adapters/interfaceAdapters/routes/schemas/"],
   testPathIgnorePatterns: ["/node_modules/", "/dist/", "/docs/"],
   preset: 'ts-jest/presets/default-esm',
   testEnvironment: 'node',

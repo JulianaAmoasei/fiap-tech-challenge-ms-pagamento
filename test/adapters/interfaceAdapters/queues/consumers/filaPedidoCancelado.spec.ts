@@ -4,18 +4,19 @@ import { queueCheck } from "../../../../../src/adapters/interfaceAdapters/queues
 import MessageBrokerService from "../../../../../src/dataSources/messageBroker/messageBrokerService";
 import { StatusPagamentoServico } from "../../../../../src/domain/entities/types/pagamentoType";
 
+const objPagamentoEstornadoMock = {
+  _id: "123",
+  pedidoId: "123",
+  valor: 10,
+  metodoDePagamento: "QR Code",
+  statusPagamento: StatusPagamentoServico.PAGAMENTO_ESTORNADO,
+  estornoId: "456",
+  createdAt: new Date(),
+  deletedAt: null,
+  updatedAt: null,
+};
+
 describe("queueCheck", () => {
-  const objPagamentoEstornadoMock = {
-    _id: "123",
-    pedidoId: "123",
-    valor: 10,
-    metodoDePagamento: "QR Code",
-    statusPagamento: StatusPagamentoServico.PAGAMENTO_ESTORNADO,
-    estornoId: "456",
-    createdAt: new Date(),
-    deletedAt: null,
-    updatedAt: null,
-  };
   afterEach(() => {
     jest.clearAllMocks();
   });
@@ -26,7 +27,7 @@ describe("queueCheck", () => {
   };
   const URL_FILA_CANCELAMENTO_PEDIDO = process.env.URL_FILA_CANCELAMENTO_PEDIDO;
 
-  it.skip("deve receber e processar mensagens da fila", async () => {
+  it.skip("deve receber e processar mensagens da fila de cancelados", async () => {
     const queueServiceMock = (MessageBrokerService.prototype.recebeMensagem =
       jest.fn().mockResolvedValue([mensagemPagamentoMock] as any));
     const estornaPagamentoMock = (PagamentoController.estornaPagamento = jest
