@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import PagamentoController from "../../../../../src/adapters/interfaceAdapters/controllers/pagamentoController";
-import MonitoramentoPagamentos, { queueCheck } from "../../../../../src/adapters/interfaceAdapters/queues/consumers/filaEnvioPagamento";
+import MonitoramentoPagamentos, {
+  queueCheck,
+} from "../../../../../src/adapters/interfaceAdapters/queues/consumers/filaEnvioPagamento";
 import MessageBrokerService from "../../../../../src/dataSources/messageBroker/messageBrokerService";
 import { StatusPagamentoServico } from "../../../../../src/domain/entities/types/pagamentoType";
 
