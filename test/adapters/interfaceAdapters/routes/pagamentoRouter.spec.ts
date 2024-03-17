@@ -86,7 +86,7 @@ describe("POST em /api/pagamento/processamento/", () => {
     registroPagamentoMock.statusPagamento = ProcessPagamentoReturnBody.FALHA;
     PagamentoController.atualizaStatusPagamento = jest
       .fn()
-      .mockResolvedValue(registroPagamentoMock);
+      .mockResolvedValueOnce(registroPagamentoMock);
 
       await supertest(server)
       .post(`/api/pagamentos/processamento/${pagamentoFalhaMock.pedidoId}`)
@@ -100,14 +100,16 @@ describe("POST em /api/pagamento/processamento/", () => {
 
   it("Deve retornar na resposta quando o pagamento ja foi processado", (done) => {
     registroPagamentoMock.statusPagamento = StatusPagamentoServico.PAGAMENTO_CONCLUIDO;
-    PagamentoController.atualizaStatusPagamento = jest.fn().mockImplementation(() => {
-      throw new Error('o pagamento já foi processado')
+    PagamentoController.atualizaStatusPagamento = jest.fn().mockImplementationOnce(() => {
+      throw new Error('pagamento_ja_processado')
     });
 
     supertest(server)
-      .post(`/api/pagamento/processamento/`)
+      .post(`/api/pagamento/processamento/${pagamentoFalhaMock.pedidoId}`)
       .expect(200)
       .then((response) => {
+        console.log("=================================================");
+        
         expect(response.body.mensagem).toBe(
           "Processamento já foi realizado"
         );

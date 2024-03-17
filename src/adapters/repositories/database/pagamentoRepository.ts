@@ -22,7 +22,7 @@ export default class PagamentoRepository {
     return pagamentoModel.pagamento.create(dataObj);
   }
 
-  static async listaPagamento(pedidoId: string): Promise<PagamentoDTO> {
+  static async listaPagamento(pedidoId: string): Promise<PagamentoDTO | null> {
     return pagamentoModel.pagamento.findOne({
       pedidoId,
     }) as unknown as PagamentoDTO;

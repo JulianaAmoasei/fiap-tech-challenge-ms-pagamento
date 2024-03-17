@@ -55,7 +55,7 @@ export interface MsgPagtoAtualizadoBody {
 
 export interface RecebimentoDePagamentoGatewayBody {
   pedidoId: string;
-  statusPagamento: string;
+  pagamentoEfetuado: boolean;
 }
 
 export enum ProcessPagamentoReturnBody {
