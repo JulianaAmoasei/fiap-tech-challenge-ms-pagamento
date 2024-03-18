@@ -58,8 +58,12 @@ Fluxo da realizacao de um pedido:
 
 ### Relatórios OWASP ZAP
 Disponibilizado em formato html:
--  [Relatório Inicial](docs/owasp/producao_antes.html)
--  [Relatório Corrigido](docs/owasp/producao_depois.html)
+-  [Relatório Inicial](docs/owasp/pagamento_antes.html)
+-  [Relatório Corrigido](docs/owasp/pagamento_depois.html)
+
+Os relatórios podem ser acessados via GitHub Pages:
+- [Relatório Inicial](https://julianaamoasei.github.io/fiap-tech-challenge-ms-pagamento/owasp/pagamento_antes.html)
+- [Relatório Corrigido](https://julianaamoasei.github.io/fiap-tech-challenge-ms-pagamento/owasp/pagamento_depois.html)
 
 ## Stack utilizada
 
